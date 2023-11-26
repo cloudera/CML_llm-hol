@@ -6,9 +6,15 @@ specification_version: 1.0
 prototype_version: 1.0
 
 environment_variables:
-  MODEL_NAME:
-    default: "Mistral-7B CML"
-    description: Name to give to your model in CML. NOT IMPLEMENTED.
+  PINECONE_API_KEY:
+    default: ""
+    description: "Required for Pinecone Vector DB: Enter your API Key for Pinecone here. (Shown in API Keys page)"
+  PINECONE_ENVIRONMENT:
+    default: "gcp-starter"
+    description: "Required for Pinecone Vector DB: Enter your Pinecone environment here. (Shown in API Keys page)"
+  PINECONE_INDEX:
+    default: "cml-default"
+    description: "Required for Pinecone Vector DB: The default index is 'cml-default' and can be changed to identify variations for organizations with multiple indexes."
 
 runtimes: 
   - editor: JupyterLab
