@@ -1,3 +1,1 @@
-set CMAKE_ARGS=-DLLAMA_CUBLAS=on
-set FORCE_CMAKE=1
-pip install -r 1_install_session_deps/requirements.txt
+pip install -r 0_deploy_prerequisites/env_requirements.txt

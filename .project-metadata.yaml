@@ -22,6 +22,14 @@ runtimes:
     edition: Nvidia GPU
   
 tasks:
+  - type: run_session
+    name: Install Dependencies
+    script: 0_deploy_prerequisites/download_requirements.py
+    short_summary: Install Dependencies
+    kernel: python3
+    cpu: 4
+    memory: 16
+
   - type: create_model
     name: Mistral-7b
     entity_label: Mistral-7b
