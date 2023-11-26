@@ -1,0 +1,47 @@
+name: LLM Lab Mistral 7B Standalone Model Deployment
+description: This AMP deploys Mistral 7b model as a CML model endpoint, callable via an API. Model is hosted within CML and requires node with 16GB memory and 4 cores minimum.
+author: Cloudera
+date: "2023-11-26"
+specification_version: 1.0
+prototype_version: 1.0
+
+environment_variables:
+  MODEL_NAME:
+    default: "Mistral-7B CML"
+    description: Name to give to your model in CML. NOT IMPLEMENTED.
+
+runtimes: 
+  - editor: JupyterLab
+    kernel: Python 3.9
+    edition: Nvidia GPU
+  
+tasks:
+  - type: create_model
+    name: Mistral-7b
+    entity_label: Mistral-7b
+    description: Mistral-7B model hosted in CML. 
+    short_summary: Mistral-7B
+    default_resources:
+      cpu: 4
+      memory: 16
+    default_replication_policy:
+      type: fixed
+      num_replicas: 1
+  
+  - type: build_model
+    name: Build Mistral 7B model
+    entity_label: Mistral-7b
+    comment: First build by the AMP
+    examples:
+      - request:
+          prompt: What is Cloudera?
+          temperature: 0
+          max_new_tokens: 50
+          repetition_penalty: 0.5
+
+    target_file_path: launch_model.py
+    target_function_name: api_wrapper
+
+  - type: deploy_model
+    entity_label: Mistral-7b
+    

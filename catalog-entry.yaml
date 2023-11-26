@@ -1,0 +1,17 @@
+name: Hands on Lab focused on LLMs
+
+entries:
+  - title: Mistral 7B Standalone Model Deployment
+    label: llm-model-deploy
+    short_description: |
+      This AMP deploys Mistral 7B CPU-based model as a CML API endpoint. Requires a node with 4 vCores and 16 GB memory minimum.
+    long_description: |
+      This AMP deploys Mistral 7B CPU-based model as a CML API endpoint. Requires a node with 4 vCores and 16 GB memory minimum.
+    image_path: "https://raw.githubusercontent.com/kevinbtalbert/CML_LLM-HANDS-ON-LABS/main/0_deploy_prerequisites/assets/amp-cover.png"
+    tags: 
+      - CML Labs
+      - Mistral 7B
+      - LLM
+      - Model Deployment
+    git_url: "https://github.com/kevinbtalbert/CML_LLM-HANDS-ON-LABS"
+    is_prototype: true
