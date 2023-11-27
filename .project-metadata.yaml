@@ -1,6 +1,6 @@
 name: LLM Lab Mistral 7B Standalone Model Deployment
-description: This AMP deploys Mistral 7b model as a CML model endpoint, callable via an API. Model is hosted within CML and requires node with 16GB memory and 4 cores minimum.
-author: Cloudera
+description: "TBD"
+author: "Cloudera"
 date: "2023-11-26"
 specification_version: 1.0
 prototype_version: 1.0
