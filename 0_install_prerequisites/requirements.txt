@@ -28,3 +28,12 @@ certifi==2023.7.22
 configparser==6.0.0
 requests==2.31.0
 urllib3==2.0.4
+
+## Model requirements
+setuptools==58.1.0
+bitsandbytes==0.39.1
+accelerate==0.20.3
+scipy==1.11.1
+transformers==4.33.1
+git+https://github.com/huggingface/peft.git@0b62b4378b4ce9367932c73540349da9a41bdea8
+gradio
