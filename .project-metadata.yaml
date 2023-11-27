@@ -17,7 +17,7 @@ environment_variables:
     description: "Required for Pinecone Vector DB: The default index is 'cml-default' and can be changed to identify variations for organizations with multiple indexes."
 
 runtimes: 
-  - editor: JupyterLab
+  - editor: Workbench
     kernel: Python 3.9
     edition: Nvidia GPU
   
@@ -26,7 +26,7 @@ tasks:
     name: Install Dependencies
     script: 0_install_prerequisites/download_reqs_set_vars.py
     short_summary: Install Dependencies
-    kernel: Python 3.9
+    kernel: python3
     cpu: 2
     memory: 4
   
