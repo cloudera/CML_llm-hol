@@ -1,7 +1,7 @@
 # Large Language Models with Cloudera
 **Hands on Lab for Cloudera Machine Learning**
 
-:wave: and welcome... This repository is under 
+:wave: and welcome... This repository is under construction.
 
 Briefly about LLMs...
 
@@ -15,3 +15,4 @@ Exercises:
 5. Swap LLM used in the app to one hosted within CML, along with a hosted vector DB
 
 :construction: 
+A great resource in the meantime is [this version of the Hands on Lab](https://github.com/pdefusco/CML_LLM_HOL_Workshop/tree/main). 

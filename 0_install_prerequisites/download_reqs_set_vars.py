@@ -1,1 +1,1 @@
-!pip install -r 0_install_prerequisites/requirements.txt
+!pip install --no-cache-dir -r 0_install_prerequisites/requirements.txt
