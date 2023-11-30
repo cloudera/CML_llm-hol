@@ -1,1 +1,0 @@
-pip install -r 0_deploy_prerequisites/env_requirements.txt
