@@ -30,3 +30,23 @@ tasks:
     memory: 4
     environment:
       TASK_TYPE: CREATE/RUN_JOB
+
+  - type: run_session
+    name: Setup Chroma Server
+    script: 0_install_prerequisites/setup-chroma.py
+    short_summary: Setup Chroma Server Vector DB
+    long_summary: Resolve sqlite dependency with python version and control logging in Chroma server package
+    kernel: python3
+    cpu: 2
+    memory: 4
+
+  - type: start_application
+    name: CML Chroma Server REST API Server
+    subdomain: cml-chroma-server
+    script: 3c_load_to_chroma_vector_db/launch-server.py
+    short_summary: Launch Chroma Server
+    long_summary: Launch Chroma Server REST API application. Vector Database creates encodings for GET and POST requests. Remember to enable unauthenticated app access for external access to the UI.
+    cpu: 2
+    memory: 8
+    environment_variables:
+      TASK_TYPE: START_APPLICATION
