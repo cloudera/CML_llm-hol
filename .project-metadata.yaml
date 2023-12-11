@@ -58,6 +58,6 @@ tasks:
     short_summary: Launch Chroma Server
     long_summary: Launch Chroma Server REST API application. Vector Database creates encodings for GET and POST requests. Remember to enable unauthenticated app access for external access to the UI.
     cpu: 2
-    memory: 8
+    memory: 4
     environment_variables:
       TASK_TYPE: START_APPLICATION
