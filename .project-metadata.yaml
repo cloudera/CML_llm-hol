@@ -22,7 +22,7 @@ tasks:
   - type: create_job
     name: Pull and Convert HTMLS to TXT
     entity_label: htmls_to_txt
-    script: 1_create_knowledge_base/html_to_text.py
+    script: 2_create_knowledge_base/html_to_text.py
     arguments: None
     short_summary: Create job to source htmls, download, and convert them to text. 
     long_summary: Create job to source htmls, download, and convert them to text. Update html_links.txt with the htmls you wish to download and convert.
