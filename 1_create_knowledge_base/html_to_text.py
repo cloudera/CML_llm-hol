@@ -12,20 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# XML PARSER AND WEB SCRAPER FOR INTERNAL LLM KNOWLEDGE BASE
-# ASSUMES REQUISITE URLS AND SITE MAP SCHEMA ARE CONFIGURED IN
-# cloudera_kb_config.conf FILE AND APPROPRIATE DEPENDENCIES
-# ARE INSTALLED FROM PIP. 
-
-# THE OUTPUT OF THIS FILE WILL STORE HTMLS IN /data WITH THE NAMING
-# CONVENTION 1_htmls.txt FOR PARSING BY THE NEXT UTILITY
+# THIS UTILITY PARSES HTMLS TO TEXT FOR PROCESSING BY A VECTOR DATABASE
 
 import requests
-import configparser
 from xml.etree import ElementTree as ET
-
-config = configparser.ConfigParser()
-config.read('cloudera_kb_config.conf')
 
 from bs4 import BeautifulSoup
 import re
@@ -88,7 +78,7 @@ def extract_and_write_text(url, base_path, tld):
 
 def main():
     base_path = "/home/cdsw/data"
-    with open("found_htmls.txt", "r") as file:
+    with open("html_links.txt", "r") as file:
         for line in file:
             url = line.strip()
             if url:

@@ -5,17 +5,6 @@ date: "2023-11-26"
 specification_version: 1.0
 prototype_version: 1.0
 
-environment_variables:
-  PINECONE_API_KEY:
-    default: ""
-    description: "Required for Pinecone Vector DB: Enter your API Key for Pinecone here. (Shown in API Keys page)"
-  PINECONE_ENVIRONMENT:
-    default: "gcp-starter"
-    description: "Required for Pinecone Vector DB: Enter your Pinecone environment here. (Shown in API Keys page)"
-  PINECONE_INDEX:
-    default: "cml-default"
-    description: "Required for Pinecone Vector DB: The default index is 'cml-default' and can be changed to identify variations for organizations with multiple indexes."
-
 runtimes: 
   - editor: Workbench
     kernel: Python 3.9
@@ -28,4 +17,16 @@ tasks:
     short_summary: Install Dependencies
     kernel: python3
     cpu: 2
+    memory: 12
+
+  - type: create_job
+    name: Pull and Convert HTMLS to TXT
+    entity_label: htmls_to_txt
+    script: 1_create_knowledge_base/html_to_text.py
+    arguments: None
+    short_summary: Create job to source htmls, download, and convert them to text. 
+    long_summary: Create job to source htmls, download, and convert them to text. Update html_links.txt with the htmls you wish to download and convert.
+    cpu: 2
     memory: 4
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB

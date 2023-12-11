@@ -17,24 +17,27 @@ torch==2.0.1
 accelerate==0.21.0
 huggingface-hub==0.18.0
 
-## Pinecone/Vector DB Requirements
-pinecone-client==2.2.4
-sentence-transformers==2.2.2
-
 ## Build custom knowlege base requirements
 beautifulsoup4==4.12.2
 bs4==0.0.1
 certifi==2023.7.22
-configparser==6.0.0
 requests==2.31.0
 urllib3==1.25.4
+
+## Pinecone/Vector DB Requirements
+pinecone-client==2.2.4
+sentence-transformers==2.2.2
+
+## Chroma Vector DB Requirements
+chromadb==0.4.15
+pysqlite3-binary==0.5.2.post1
+sentence-transformers==2.2.2
 
 ## Model requirements
 setuptools==58.1.0
 bitsandbytes==0.39.1
 scipy==1.11.1
 git+https://github.com/huggingface/peft.git@0b62b4378b4ce9367932c73540349da9a41bdea8
-
 
 ## AWS Bedrock Requirements
 awscli==1.29.57
