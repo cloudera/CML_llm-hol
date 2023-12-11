@@ -57,7 +57,7 @@ def main():
         print("Pinecone index is up and collection is created")
 
         # Read KB documents in ./data directory and insert embeddings into Vector DB for each doc
-        doc_dir = './data'
+        doc_dir = '/home/cdsw/data'
         for file in Path(doc_dir).glob(f'**/*.txt'):
             with open(file, "r") as f: # Open file in read mode
                 print("Generating embeddings for: %s" % file.name)
