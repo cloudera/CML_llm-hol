@@ -78,7 +78,7 @@ def extract_and_write_text(url, base_path, tld):
 
 def main():
     base_path = "/home/cdsw/data"
-    with open("html_links.txt", "r") as file:
+    with open("/home/cdsw/2_create_knowledge_base/html_links.txt", "r") as file:
         for line in file:
             url = line.strip()
             if url:
