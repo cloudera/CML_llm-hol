@@ -1,1 +1,0 @@
-pip install --no-cache-dir -r 0_deploy_prerequisites/requirements.txt

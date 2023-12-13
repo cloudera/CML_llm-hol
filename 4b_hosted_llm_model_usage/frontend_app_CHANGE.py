@@ -1,5 +1,5 @@
 import os
-import gradio
+import gradio as gr
 import pinecone
 from typing import Any, Union, Optional
 from pydantic import BaseModel
@@ -7,6 +7,7 @@ import tensorflow as tf
 from sentence_transformers import SentenceTransformer
 import requests
 import json
+import time
 
 from huggingface_hub import hf_hub_download
 
@@ -73,35 +74,45 @@ app_css = f"""
 def main():
     # Configure gradio QA app 
     print("Configuring gradio app")
-    demo = gradio.Interface(fn=get_responses,
-                        title="Enterprise Custom Knowledge Base Chatbot with Llama2",
-                        description="This AI-powered assistant uses Cloudera DataFlow (NiFi) to scrape a website's sitemap and create a knowledge base. The information it provides as a response is context driven by what is available at the scraped websites. It uses Meta's open-source Llama2 model and the sentence transformer model all-mpnet-base-v2 to evaluate context and form an accurate response from the semantic search. It is fine tuned for questions stemming from topics in its knowledge base, and as such may have limited knowledge outside of this domain. As is always the case with prompt engineering, the better your prompt, the more accurate and specific the response.",
-                        inputs=[gradio.Radio(['Llama-2-7b'], label="Select Model", value="Llama-2-7b"), gradio.Slider(minimum=0.01, maximum=1.0, step=0.01, value=0.5, label="Select Temperature (Randomness of Response)"), gradio.Radio(["50", "100", "250", "500", "1000"], label="Select Number of Tokens (Length of Response)", value="250"), gradio.Textbox(label="Question", placeholder="Enter your question here.")],
-                        outputs=[gradio.Textbox(label="Llama2 7B Model Response"), gradio.Textbox(label="Context Data Source(s)"), gradio.Textbox(label="Pinecone Match Score")],
-                        allow_flagging="never",
-                        css=app_css)
+    # demo = gradio.Interface(fn=get_responses,
+    #                     title="Enterprise Custom Knowledge Base Chatbot with Llama2",
+    #                     description=,
+    #                     inputs=[gradio.Radio(['Llama-2-7b'], label="Select Model", value="Llama-2-7b"), gradio.Slider(minimum=0.01, maximum=1.0, step=0.01, value=0.5, label="Select Temperature (Randomness of Response)"), gradio.Radio(["50", "100", "250", "500", "1000"], label="Select Number of Tokens (Length of Response)", value="250"), gradio.Textbox(label="Question", placeholder="Enter your question here.")],
+    #                     outputs=[gradio.Textbox(label="Llama2 7B Model Response"), gradio.Textbox(label="Context Data Source(s)"), gradio.Textbox(label="Pinecone Match Score")],
+    #                     allow_flagging="never",
+    #                     css=app_css)
+
+    DESC = "This AI-powered assistant uses Cloudera DataFlow (NiFi) to scrape a website's sitemap and create a knowledge base. The information it provides as a response is context driven by what is available at the scraped websites. It uses Meta's open-source Llama2 model and the sentence transformer model all-mpnet-base-v2 to evaluate context and form an accurate response from the semantic search. It is fine tuned for questions stemming from topics in its knowledge base, and as such may have limited knowledge outside of this domain. As is always the case with prompt engineering, the better your prompt, the more accurate and specific the response."
+    
+    
+    # Create the Gradio Interface
+    demo = gr.ChatInterface(
+        fn=get_responses, 
+        #examples=["What is Cloudera?", "What is Apache Spark?"], 
+        title="Enterprise Custom Knowledge Base Chatbot with Llama2",
+        description = DESC,
+        additional_inputs=[gr.Radio(['Llama-2-7b'], label="Select Model", value="Llama-2-7b"), 
+                           gr.Slider(minimum=0.01, maximum=1.0, step=0.01, value=0.5, label="Select Temperature (Randomness of Response)"),
+                           gr.Radio(["50", "100", "250", "500", "1000"], label="Select Number of Tokens (Length of Response)", value="250")],
+        css = app_css,
+        retry_btn = None,
+        undo_btn = None,
+        clear_btn = None,
+        autofocus = True
+        )
 
     # Launch gradio app
     print("Launching gradio app")
-    demo.launch(share=True,
+    demo.launch(share=True,   
                 enable_queue=True,
                 show_error=True,
                 server_name='127.0.0.1',
-                server_port=int(os.getenv('CDSW_APP_PORT')))
+                server_port=int(os.getenv('CDSW_READONLY_PORT')))
     print("Gradio app ready")
 
 # Helper function for generating responses for the QA app
-def get_responses(engine, temperature, token_count, question):
-    if engine is "" or question is "" or engine is None or question is None:
-        return "One or more fields have not been specified."
-    if temperature is "" or temperature is None:
-      temperature = 1
-      
-    #if topic_weight is "" or topic_weight is None:
-    #  topic_weight = None
-      
-    if token_count is "" or token_count is None:
-      token_count = 100
+def get_responses(message, history, model, temperature, token_count):
+    
     
     if USE_PINECONE:
         context_chunk, sources, score = get_nearest_chunk_from_pinecone_vectordb(index, question)
@@ -112,9 +123,15 @@ def get_responses(engine, temperature, token_count, question):
         context_chunk = "Cloudea is an Open Lakehouse Company"
         sources = ""
         score = ""
-        response = get_llama2_response_with_context(question, context_chunk, temperature, token_count)
-        return response, sources, score
-
+        response = get_llama2_response_with_context(message, context_chunk, temperature, token_count)
+        
+        #response = f"System prompt: {system_prompt}\n Message: {message}."
+        for i in range(len(response)):
+            time.sleep(0.02)
+            yield response[: i+1]
+        
+        #return response, sources, score
+    
 
 
 # Get embeddings for a user question and query Pinecone vector DB for nearest knowledge base chunk

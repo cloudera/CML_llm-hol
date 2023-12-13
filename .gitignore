@@ -1,3 +1,5 @@
 .*
 !/.gitignore
 !/.project-metadata.yaml
+chroma.log
+chroma-data/*
