@@ -4,6 +4,8 @@ author: "Cloudera"
 date: "2023-11-26"
 specification_version: 1.0
 prototype_version: 1.0
+environment_variables:
+  
 
 runtimes: 
   - editor: JupyterLab
