@@ -15,7 +15,7 @@ from botocore.config import Config
 from huggingface_hub import hf_hub_download
 
 
-USE_PINECONE = False # Set this to avoid any Pinecone calls
+USE_PINECONE = True # Set this to avoid any Pinecone calls
 
 EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
 
@@ -48,7 +48,6 @@ if os.environ.get("AWS_DEFAULT_REGION") == "":
     
 ## Setup Bedrock client:
 def get_bedrock_client(
-    assumed_role: Optional[str] = None,
     endpoint_url: Optional[str] = None,
     region: Optional[str] = None,
 ):
@@ -56,9 +55,6 @@ def get_bedrock_client(
 
     Parameters
     ----------
-    assumed_role :
-        Optional ARN of an AWS IAM role to assume for calling the Bedrock service. If not
-        specified, the current active credentials will be used.
     endpoint_url :
         Optional override for the Bedrock service API Endpoint. If setting this, it should usually
         include the protocol i.e. "https://..."
@@ -66,10 +62,7 @@ def get_bedrock_client(
         Optional name of the AWS Region in which the service should be called (e.g. "us-east-1").
         If not specified, AWS_REGION or AWS_DEFAULT_REGION environment variable will be used.
     """
-    if region is None:
-        target_region = os.environ.get("AWS_REGION", os.environ.get("AWS_DEFAULT_REGION"))
-    else:
-        target_region = region
+    target_region = region
 
     print(f"Create new client\n  Using region: {target_region}")
     session_kwargs = {"region_name": target_region}
@@ -89,17 +82,6 @@ def get_bedrock_client(
     )
     session = boto3.Session(**session_kwargs)
 
-    if assumed_role:
-        print(f"  Using role: {assumed_role}", end='')
-        sts = session.client("sts")
-        response = sts.assume_role(
-            RoleArn=str(assumed_role),
-            RoleSessionName="langchain-llm-1"
-        )
-        print(" ... successful!")
-        client_kwargs["aws_access_key_id"] = response["Credentials"]["AccessKeyId"]
-        client_kwargs["aws_secret_access_key"] = response["Credentials"]["SecretAccessKey"]
-        client_kwargs["aws_session_token"] = response["Credentials"]["SessionToken"]
 
     if endpoint_url:
         client_kwargs["endpoint_url"] = endpoint_url
@@ -118,50 +100,23 @@ def get_bedrock_client(
 boto3_bedrock = get_bedrock_client(
       region=os.environ.get("AWS_DEFAULT_REGION", None))
 
-app_css = f"""
-        .gradio-header {{
-            color: white;
-        }}
-        .gradio-description {{
-            color: white;
-        }}
-
-        #custom-logo {{
-            text-align: center;
-        }}
-        .gr-interface {{
-            background-color: rgba(255, 255, 255, 0.8);
-        }}
-        .gradio-header {{
-            background-color: rgba(0, 0, 0, 0.5);
-        }}
-        .gradio-input-box, .gradio-output-box {{
-            background-color: rgba(255, 255, 255, 0.8);
-        }}
-        h1 {{
-            color: white; 
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: large; !important;
-        }}
-"""
 
 def main():
     # Configure gradio QA app 
     print("Configuring gradio app")
 
-    DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party LLMs and "
+    DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party solutions for LLMs and Vector Databases, as well as internally hosted models and vector DBs."
     
     # Create the Gradio Interface
     demo = gr.ChatInterface(
         fn=get_responses, 
-        #examples=["What is Cloudera?", "What is Apache Spark?"], 
+        #examples=[["What is Cloudera?", "AWS Bedrock Claude v2.1", 0.5, "100"], ["What is Apache Spark?", 0.5, "100"], ["What is CML HoL?", 0.5, "100"]], 
         title="Enterprise Custom Knowledge Base Chatbot with Llama2",
         description = DESC,
-        additional_inputs=[gr.Radio(['Local Llama 2 7B', 'AWS Bedrock Claude v2.1'], label="Select Foundational Model", value="Local Llama 2 7B"), 
+        additional_inputs=[gr.Radio(['Local Llama 2 7B', 'AWS Bedrock Claude v2.1'], label="Select Foundational Model", value="AWS Bedrock Claude v2.1", visible=False), 
                            gr.Slider(minimum=0.01, maximum=1.0, step=0.01, value=0.5, label="Select Temperature (Randomness of Response)"),
                            gr.Radio(["50", "100", "250", "500", "1000"], label="Select Number of Tokens (Length of Response)", value="250"),
-                           gr.Radio(['None', 'Pinecone', 'Local Chroma'], label="Vector Database Choices", value="None")],
-        css = app_css,
+                           gr.Radio(['None', 'Pinecone'], label="Vector Database Choices", value="None")],
         retry_btn = None,
         undo_btn = None,
         clear_btn = None,
@@ -184,56 +139,60 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
     # AWS Bedrock Claude v2.1 0.5 50 Chroma
     
     if model == "Local Llama 2 7B":
-        # Essentially no context, for now <--- this is a STUB to update with Chroma call
-        context_chunk = "Cloudea is an Open Lakehouse Company"
-        sources = ""
-        score = ""
-        response = get_llama2_response_with_context(message, context_chunk, temperature, token_count)
         
-        #response = f"System prompt: {system_prompt}\n Message: {message}."
-        for i in range(len(response)):
-            time.sleep(0.02)
-            yield response[: i+1]
+        if vector_db == "None":
+            context_chunk = ""
+            response = get_llama2_response_with_context(message, context_chunk, temperature, token_count)
+        
+            # Stream output to UI
+            for i in range(len(response)):
+                time.sleep(0.02)
+                yield response[:i+1]
+                
+        elif vector_db == "Pinecone":
+            # TODO: sub this with call to Pinecone to get context chunks
+            response = "ERROR: Pinecone is not implemented in the app yet"
+            
+            # Stream output to UI
+            for i in range(len(response)):
+                time.sleep(0.02)
+                yield response[:i+1]
     
     elif model == "AWS Bedrock Claude v2.1":
-        # TODO: make AWS Bedrock call
-        context_chunk = "Cloudea is an Open Lakehouse Company"
-        sources = ""
-        score = ""
-        response = get_bedrock_response_with_context(message, context_chunk, temperature, token_count)
+        if vector_db == "None":
+            # No context call Bedrock
+            response = get_bedrock_response_with_context(message, "", temperature, token_count)
         
-        for i in range(len(response)):
-            time.sleep(0.02)
-            yield response
-    
-    
-#     if USE_PINECONE:
-#         context_chunk, sources, score = get_nearest_chunk_from_pinecone_vectordb(index, question)
-#         response = get_llama2_response_with_context(question, context_chunk, temperature, token_count)
-#         return response, sources, score
-#     else:
-#         # Essentially no context, for now
-#         context_chunk = "Cloudea is an Open Lakehouse Company"
-#         sources = ""
-#         score = ""
-#         response = get_llama2_response_with_context(message, context_chunk, temperature, token_count)
-        
-#         #response = f"System prompt: {system_prompt}\n Message: {message}."
-#         for i in range(len(response)):
-#             time.sleep(0.02)
-#             yield response[: i+1]
-        
-#         #return response, sources, score
-    
+            # Stream output to UI
+            for i in range(len(response)):
+                time.sleep(0.02)
+                yield response[:i+1]
+                
+        elif vector_db == "Pinecone":
+            # Vector search the index
+            context_chunk, source, score = get_nearest_chunk_from_pinecone_vectordb(index, message)
+            
+            # Call Bedrock model
+            response = get_bedrock_response_with_context(message, context_chunk, temperature, token_count)
+            
+            response = f"{response}\n\n For additional info see: {url_from_source(source)}"
+            
+            # Stream output to UI
+            for i in range(len(response)):
+                time.sleep(0.01)
+                yield response[:i+1]
 
+def url_from_source(source):
+    url = source.replace('/home/cdsw/data/https:/', 'https://').replace('.txt', '.html')
+    return f"[Reference 1]({url})"
+    
 
 # Get embeddings for a user question and query Pinecone vector DB for nearest knowledge base chunk
 def get_nearest_chunk_from_pinecone_vectordb(index, question):
     # Generate embedding for user question with embedding model
     retriever = SentenceTransformer(EMBEDDING_MODEL_REPO)
     xq = retriever.encode([question]).tolist()
-    xc = index.query(xq, top_k=5,
-                 include_metadata=True)
+    xc = index.query(xq, top_k=5,include_metadata=True)
     
     matching_files = []
     scores = []
@@ -250,8 +209,11 @@ def get_nearest_chunk_from_pinecone_vectordb(index, question):
     response = load_context_chunk_from_data(matching_files[0])
     sources = matching_files[0]
     score = scores[0]
+    
+    print(f"Response of context chunk {response}")
     return response, sources, score
-  
+    #return "Cloudera is an Open Data Lakhouse company", "http://cloudera.com", 89 
+
 # Return the Knowledge Base doc based on Knowledge Base ID (relative file path)
 def load_context_chunk_from_data(id_path):
     with open(id_path, "r") as f: # Open file in read mode
@@ -259,18 +221,28 @@ def load_context_chunk_from_data(id_path):
 
 
 def get_bedrock_response_with_context(question, context, temperature, token_count):
-    instruction_text = """Human: You are a helpful, honest, and courteous assistant. If you don't know the answer, simply state I don't know the answer to that question. Answer the following question: {{USER_TEXT}}
-                    Assistant:"""
     
-    input_text = question
+    # Supply different instructions, depending on whether or not context is provided
+    if context == "":
+        instruction_text = """Human: You are a helpful, honest, and courteous assistant. If you don't know the answer, simply state I don't know the answer to that question. Please provide an honest response to the user question enclosed in <question></question> tags. Do not repeat the question in the output.
+    
+    <question>{{QUESTION}}</question>
+                    Assistant:"""
+    else:
+        instruction_text = """Human: You are a helpful, honest, and courteous assistant. If you don't know the answer, simply state I don't know the answer to that question. Please read the text provided between the tags <text></text> and provide an honest response to the user question enclosed in <question></question> tags. Do not repeat the question in the output.
+    <text>{{CONTEXT}}</text>
+    
+    <question>{{QUESTION}}</question>
+                    Assistant:"""
 
+    
     # Replace instruction placeholder to build a complete prompt
-    full_prompt = instruction_text.replace("{{USER_TEXT}}", input_text)
+    full_prompt = instruction_text.replace("{{QUESTION}}", question).replace("{{CONTEXT}}", context)
     
     # Model expects a JSON object with a defined schema
     body = json.dumps({"prompt": full_prompt,
              "max_tokens_to_sample":int(token_count),
-             "temperature":0.6,
+             "temperature":float(temperature),
              "top_k":250,
              "top_p":1.0,
              "stop_sequences":[]
@@ -310,9 +282,9 @@ def get_llama2_response_with_context(question, context, temperature, token_count
         print(f"Request: {data}")
         print(f"Response: {r.json()}")
         
-        no_inst_response = str(r.json()['response'])[len(question_and_context)+2:]
+        #no_inst_response = str(r.json()['response'])[len(question_and_context)+2:]
             
-        return no_inst_response
+        return "TEST" #no_inst_response
         
     except Exception as e:
         print(e)
@@ -321,5 +293,3 @@ def get_llama2_response_with_context(question, context, temperature, token_count
 
 if __name__ == "__main__":
     main()
-    
-

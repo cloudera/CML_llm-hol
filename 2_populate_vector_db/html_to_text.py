@@ -13,6 +13,7 @@
 # limitations under the License.
 
 # THIS UTILITY PARSES HTMLS TO TEXT FOR PROCESSING BY A VECTOR DATABASE
+# Use html_links.txt to update with your own URLs and run/rerun CML job.
 
 import requests
 from xml.etree import ElementTree as ET
@@ -78,7 +79,7 @@ def extract_and_write_text(url, base_path, tld):
 
 def main():
     base_path = "/home/cdsw/data"
-    with open("/home/cdsw/2_create_knowledge_base/html_links.txt", "r") as file:
+    with open("/home/cdsw/2_populate_vector_db/html_links.txt", "r") as file:
         for line in file:
             url = line.strip()
             if url:
