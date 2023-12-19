@@ -38,18 +38,6 @@ tasks:
     cpu: 2
     memory: 12
 
-  - type: create_job
-    name: Pull and Convert HTMLS to TXT
-    entity_label: htmls_to_txt
-    script: 2_create_knowledge_base/html_to_text.py
-    arguments: None
-    short_summary: Create job to source htmls, download, and convert them to text. 
-    long_summary: Create job to source htmls, download, and convert them to text. Update html_links.txt with the htmls you wish to download and convert.
-    cpu: 2
-    memory: 4
-    environment:
-      TASK_TYPE: CREATE/RUN_JOB
-
   - type: run_session
     name: Setup Chroma Server
     script: 0_install_prerequisites/setup-chroma.py
@@ -60,23 +48,13 @@ tasks:
     memory: 4
 
   - type: create_job
-    name: Populate Chroma Vector DB with document embeddings
-    entity_label: chroma_vectordb_insert
-    script: 3c_load_to_chroma_vector_db/populate_chroma_vectors.py
+    name: Pull and Convert HTMLS to TXT
+    entity_label: htmls_to_txt
+    script: 2_populate_vector_db/html_to_text.py
     arguments: None
-    short_summary: Create job to push vectors with document embeddings to Chroma DB. 
+    short_summary: Create job to source htmls, download, and convert them to text. 
+    long_summary: Create job to source htmls, download, and convert them to text. Update html_links.txt with the htmls you wish to download and convert.
     cpu: 2
     memory: 4
     environment:
       TASK_TYPE: CREATE/RUN_JOB
-
-  - type: start_application
-    name: CML Chroma Server REST API Server
-    subdomain: cml-chroma-server
-    script: 3c_load_to_chroma_vector_db/launch-server.py
-    short_summary: Launch Chroma Server
-    long_summary: Launch Chroma Server REST API application. Vector Database creates encodings for GET and POST requests. Remember to enable unauthenticated app access for external access to the UI.
-    cpu: 2
-    memory: 4
-    environment_variables:
-      TASK_TYPE: START_APPLICATION
