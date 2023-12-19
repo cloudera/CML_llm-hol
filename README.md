@@ -101,10 +101,5 @@ You might notice this script shares some functions with the code we used earlier
 Next let's look at how an application can be deployed programatically. 
 The notebook first sets up the conatainer runtime paramters for the application - the python version, GPU (if required), and editor. After this is complete the application build request is exectuted. Here we define the resources required, based on expected usage. Most importantly we define the script running the application.
 
-
-
-
-
-
 ### Switch Vector DB to Chroma DB
-
+Continuing on with this theme of modularity, lets consider how we may switch vector DBs on the fly.
