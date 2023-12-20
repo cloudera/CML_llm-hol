@@ -7,8 +7,7 @@ entries:
       This AMP is used for Cloudera Machine Learning Hands on Labs and focuses on CML's integrations with external components as well as running
       use case entirely in CML.
     long_description: |
-      This AMP is used for Cloudera Machine Learning Hands on Labs and focuses on CML's integrations with external components as well as running
-      use case entirely in CML.
+      Hands on Lab which demonstrates a number of concepts including web scraping, vector databases, model deployment, model usage, Langchain, application building, and instruction following/tuning.
     image_path: "https://raw.githubusercontent.com/kevinbtalbert/CML_LLM-HANDS-ON-LABS/main/assets/amp-cover.png"
     tags: 
       - CML Labs

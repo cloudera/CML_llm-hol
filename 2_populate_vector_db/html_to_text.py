@@ -13,6 +13,7 @@
 # limitations under the License.
 
 # THIS UTILITY PARSES HTMLS TO TEXT FOR PROCESSING BY A VECTOR DATABASE
+# Use html_links.txt to update with your own URLs and run/rerun CML job.
 
 import requests
 from xml.etree import ElementTree as ET

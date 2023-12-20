@@ -1,7 +1,7 @@
 # Large Language Models with Cloudera
 **Hands on Lab for Cloudera Machine Learning**
 
-:wave: and welcome... This repository is under construction.
+:wave: and welcome... 
 
 ### Overview
 The goal of this hands-on lab is to explore and interact with a real LLM application. Additionally, we gain experience in configuring components of the application for the given task and performance desired. In a real-world scenario, changing business requirements and technology advancements necessitate agility in interchanging these components. 
@@ -22,7 +22,7 @@ This view considers not only the intial design of the LLM application, but one t
 
 Ultimately the lab aims to demonstrate the ease and flexibility in which users can build and modify end to end LLM applications.
 
-This lab is broken up into the following 7 sections.
+This lab is broken up into the following 8 sections.
 
 1. Exploring Amazon Bedrock through CML
 2. Scrape and ingest data and populate Pinecone DB
@@ -31,6 +31,7 @@ This lab is broken up into the following 7 sections.
 5. Switch Vector DB to Chroma DB
 6. Langchain
 7. Use a locally hosted LLama2 model.
+8. Use instruction-following for model refinement.
 
 :construction: 
 A great resource in the meantime is [this version of the Hands on Lab](https://github.com/pdefusco/CML_LLM_HOL_Workshop/tree/main). 

@@ -149,7 +149,7 @@ def main():
     # Configure gradio QA app 
     print("Configuring gradio app")
 
-    DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party LLMs and "
+    DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party LLMs and Vector Databases."
     
     # Create the Gradio Interface
     demo = gr.ChatInterface(
