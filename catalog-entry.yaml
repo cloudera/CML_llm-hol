@@ -18,11 +18,11 @@ entries:
     is_prototype: true
     
   - title: Shared LLM Model for Hands on Lab
-    label: llm-model-deployment
+    label: llm-model-deploy
     short_description: |
-      This AMP deploys LLAMA 2 7 billion token model as a CML model, with replicas. Requires GPUs.
+      This AMP deploys LLAMA-2-7B model as a CML API endpoint. Requires a GPU node with 4 vCores and 16 GB memory minimum.
     long_description: |
-      This AMP deploys LLAMA 2 7 billion token model as a CML model, with replicas. Requires GPUs.
+      This AMP deploys LLAMA-2-7B model as a CML API endpoint. Requires a GPU node with 4 vCores and 16 GB memory minimum.
     image_path: "https://raw.githubusercontent.com/cloudera/CML_Deploy-Llama2-CML-Native-Model/main/images/human-ml-unsplash.jpg"
     tags: 
       - LLama 7B
