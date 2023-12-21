@@ -7,18 +7,20 @@ import tensorflow as tf
 from sentence_transformers import SentenceTransformer
 import requests
 import json
+import cmlapi
+import sys
 
-from huggingface_hub import hf_hub_download
-
+client = cmlapi.default_client(url=os.getenv("CDSW_API_URL").replace("/api/v1", ""), cml_api_key=os.getenv("CDSW_APIV2_KEY"))
+projects = client.list_projects(search_filter=json.dumps({"name": "Shared LLM Model for Hands on Lab"}))
+project = projects.projects[0]
+model = client.list_models(project_id=project.id)
+selected_model = model.models[0]
+MODEL_ACCESS_KEY = selected_model.access_key
+MODEL_ENDPOINT = os.getenv("CDSW_API_URL").replace("https://", "https://modelservice.").replace("/api/v1", "/model?accessKey=") + MODEL_ACCESS_KEY
 
 USE_PINECONE = False # Set this to avoid any Pinecone calls
 
 EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
-GEN_AI_MODEL_REPO = "TheBloke/Llama-2-13B-chat-GGUF"
-GEN_AI_MODEL_FILENAME = "llama-2-13b-chat.Q5_0.gguf"
-
-gen_ai_model_path = hf_hub_download(repo_id=GEN_AI_MODEL_REPO, filename=GEN_AI_MODEL_FILENAME)
-
 
 if USE_PINECONE:
     PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
@@ -36,12 +38,6 @@ if USE_PINECONE:
     # Get latest statistics from index
     current_collection_stats = index.describe_index_stats()
     print('Total number of embeddings in Pinecone index is {}.'.format(current_collection_stats.get('total_vector_count')))
-
-## TO DO GET MODEL DEPLOYMENT
-## Need to get the below prgramatically in the future iterations
-MODEL_ACCESS_KEY = os.environ["CML_MODEL_KEY"]
-MODEL_ENDPOINT = "https://modelservice.ml-8ac9c78c-674.se-sandb.a465-9q4k.cloudera.site/model?accessKey=" + MODEL_ACCESS_KEY
-
 
 app_css = f"""
         .gradio-header {{
@@ -96,9 +92,6 @@ def get_responses(engine, temperature, token_count, question):
         return "One or more fields have not been specified."
     if temperature is "" or temperature is None:
       temperature = 1
-      
-    #if topic_weight is "" or topic_weight is None:
-    #  topic_weight = None
       
     if token_count is "" or token_count is None:
       token_count = 100
@@ -156,16 +149,6 @@ def get_llama2_response_with_context(question, context, temperature, token_count
     question_and_context = question + " Here is the context: " + str(context)
 
     try:
-        #params = {
-        #    "prompt": str(question_and_context)
-        #}
-        
-        ## TO DO CONVERT TO USE CML MODEL
-        # response = llama2_model(prompt=question_and_context, **params)
-
-        # model_out = response['choices'][0]['text']
-        # return model_out
-        
         # Following LLama's spec for prompt engineering
         llama_sys = f"<<SYS>>\n You are a helpful, respectful and honest assistant. If you are unsurae about an answer, truthfully say \"I don't know\".\n<</SYS>>\n\n"
         llama_inst = f"[INST]Use your own knowledge and additionally use the following information to answer the user's question: {context} [/INST]"
