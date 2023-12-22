@@ -125,7 +125,7 @@ In the final step we create and run the job. This step points to the script resp
 
 So far we have seen a number of components that come together to allow us to interact with our data - the model, the vector data base, the application, the code base, and finally the underlying platform. Langchain is a powerfull library that offers and flexible way to chain those (plus more) components together. In this lab we'll look at a particular use of lang chain, although it can be for more things such as agents that can take actions based on LLMs responses. For more information see : [Intro to Langchain](https://python.langchain.com/docs/get_started/introduction)
 
-For this lab we'll be looking at using langchain to 'chain' together teh following components:
+Go into the folder (6_populate_local_chroma_db), open the notebook called (Langchain_Bedrock_Chroma.ipynb) In this section we'll be looking at using langchain to 'chain' together the following components:
 - Amazon Bedrock
 - Chroma vector data base
 - Prompt Template
