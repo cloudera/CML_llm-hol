@@ -2,7 +2,7 @@ name: Hands on Lab focused on LLMs
 
 entries:
   - title: Hands on Lab Workshop with LLM
-    label: llm-model-deploy
+    label: llm-hol
     short_description: |
       This AMP is used for Cloudera Machine Learning Hands on Labs and focuses on CML's integrations with external components as well as running
       use case entirely in CML.
