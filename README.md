@@ -1,7 +1,7 @@
 # Large Language Models with Cloudera
 **Hands on Lab for Cloudera Machine Learning**
 
-:wave: and welcome... This repository is under construction.
+:wave: and welcome.
 
 ### Overview
 The goal of this hands-on lab is to explore and interact with a real LLM application. Additionally, we gain experience in configuring components of the application for the given task and performance desired. In a real-world scenario, changing business requirements and technology advancements necessitate agility in interchanging these components. 
@@ -31,6 +31,8 @@ This lab is broken up into the following 7 sections.
 5. Switch Vector DB to Chroma DB
 6. Langchain
 7. Use a locally hosted LLama2 model.
+8. Deploying Final Application
+9. Instruction Following
 
 :construction: 
 A great resource in the meantime is [this version of the Hands on Lab](https://github.com/pdefusco/CML_LLM_HOL_Workshop/tree/main). 
@@ -51,7 +53,6 @@ The key to generative AI is in its ability to generate fresh new content. There 
 - Top p - Limits the model's selection of the word responses to the top p percent of the distribution
   
 
-
 ### Scrape and ingest data and populate Pinecone DB
 
 In this section we'll see the power of CML as we run job to scrape the data we'd would like to add to our knowledge base, and then a sectond job that populates the pincone vector database. The jobs have already been created for you at setup. Lets start by defining the HTML you'd like to gather data from.
@@ -63,11 +64,21 @@ They are all located in file called html_links.txt.
 Anytime you point to a new location(s) you can update this file and then rerun the scraping job.
 
 **Loading Pinecone**
-In this exercise, we'll look at a number of ways to populate our vector database. One approach is to do this through a script - pinecone_vectordb_insert.py
+In this lab, we'll look at a number of ways to populate our vector database of choice. We'll review the following
 
-Although effective, a more automated way of doing this is to create a job. So that say after each time you've scraped new data, you can in turn populate the vector db. A CML job can be created a number of ways. We will start , but an automated way to to do this through an API. We'll look at this now through a jupyter notebook. For this look at the file called 'create_pinecone.ipynb'. Go through the notebook and run the cells.
+- Through a CML job
+- Through a script
+- Generating a job and running it programatically 
 
-You've now succesfully created a new job and run it as well. By looking at your project's job section you should see a new job created that starts with "Populate Pinecone Vector DB ... "
+In production you would likely opt for the second or third option. For this excerise, it's useful create a job through the ui so we can understand the process a bit better. 
+
+Let's begin by looking for the job section withing or project. And then select "New Job"
+![Alt text](./assets/job%20create.png)
+
+No let's look at the fields we need to complete for this job. Most importatnly is to point the job to the underlying script (pinecone_vectordb_insert.py). CML Jobs are an extremely easy way to schedule jobs to run a certain times or on a dependency another job. In fact that is what we will be doing now. So that each time new html urls are scraped the vector data base is also populated.
+![Alt text](./assets/job%20details.png)
+
+Now that you've created your job you can run it. 
 
 ### Explore your data via Pinecone DB
 
@@ -90,7 +101,7 @@ There are a number of ways to deploy an application within CML. In this lab we w
 
 On your project screen click on "Applications", click on new application (upper right corner). See figure below for how to fill in the fields.
 Note the path for the script that will be running the app. Lastly you do not need a GPU for this instance, as this application will not house the model but will call the model for inference.
-![alt-text](./assets/app-build-through-ui.png)
+![Alt-text](./assets/app-build-through-ui.png)
 
 #### Application script
 Let's take a minute to see what's powering this application before we see the application. Open the folder '3d_launch_hosted_app.py'. The model defines endpoint url and access key varibles (lines 42 and 43) which are then passed through to the bedrock client. 
@@ -133,4 +144,18 @@ Go into the folder (6_populate_local_chroma_db), open the notebook called (Langc
 We've seen the first two components in action so let's quickly discuss why Prompt templates might be useful. You've likely heard of prompt engineering which focuses on developing prompts that tailor the models responses to you requirements. A common example is to use few shots prompts, which essential provide the model with a few examples of how you expect it to respond to certain inputs. Additionally you can prompt a model to answer a certain way. As might ask a model to explain a concept in great detail or simplly an overview. All these prompts can be aided with the use of prompt templates.
 
 The beauty of using langchain for our example once we've created the chain object we do not have to rely on customer functions to query the vector store, then send path to LLM for a reponse. This is all done in a single function. The pieces of 'chain' can then be replaced when needed.
+
+### Use a locally hosted LLama2 model
+
+In this example we're going to look at yet another dimension of interacting with our deployed models. In earlier examples that used notebooks, we relied on code to aid in the process our querying the vector db, then interacting with the model. We now look at a scenario that resembles how the interaction may take place in production - with a model and vector store in place. This is facilitate through the use of cml's apis. 
+
+We begin this notebook, by setting up our client. We can list all the projects in the workspace, along wiht accompaning metadata. We show here how to get the model access key for the deployed LLM model. We then need to configer the json payload to make the appropriate call to the model endpoint. You can see that, in step 2 "Create Request to Model", there a few steps required to get to prepare the request for the model. And voila, you have proramatic way to easily interact with your model. If extend this to a use case, you could imaging multiple chatbot agents packaging requests and sending them to a single model.
+
+### Launch Final Application
+
+### Instruction Following
+
+We'll now look at an example, that uses the Bloom model for instruction following. For this section you'll need a session with a GPU. We will instructing the model to classify a review as positive or negatice. We will be using multi-shot approach, providing a few examples of reviews along with actual positive or negative rating. 
+
+What we are testing is the ability for the LLM model to learn to review will (according to our labeled data) under a three seperate multi-shot prompt scenarios. Then for each scenario, the prompted model is asked to clasify the entire dataset with and finally and accuracy score is calculated. We can see that going from prompt 1 to 2 saw an inrease while going from prompt 2 to 3 saw a signicat drop.  
 
