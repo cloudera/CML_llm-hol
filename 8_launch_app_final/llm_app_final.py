@@ -11,11 +11,14 @@ import time
 from typing import Optional
 import boto3
 from botocore.config import Config
+import chromadb
+from chromadb.utils import embedding_functions
 
 from huggingface_hub import hf_hub_download
 
-
-USE_PINECONE = True # Set this to avoid any Pinecone calls
+# Set any of these to False, if not using respective parts of the lab
+USE_PINECONE = True 
+USE_CHROMA = True 
 
 EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
 
@@ -37,6 +40,34 @@ if USE_PINECONE:
     current_collection_stats = index.describe_index_stats()
     print('Total number of embeddings in Pinecone index is {}.'.format(current_collection_stats.get('total_vector_count')))
 
+    
+if USE_CHROMA:
+    # Connect to local Chroma data
+    chroma_client = chromadb.PersistentClient(path="/home/cdsw/chroma-data")
+    
+    EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
+    EMBEDDING_MODEL_NAME = "all-mpnet-base-v2"
+    EMBEDDING_FUNCTION = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL_NAME)
+
+    COLLECTION_NAME = 'cml-default'
+
+    print("initialising Chroma DB connection...")
+
+    print(f"Getting '{COLLECTION_NAME}' as object...")
+    try:
+        chroma_client.get_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
+        print("Success")
+        collection = chroma_client.get_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
+    except:
+        print("Creating new collection...")
+        collection = chroma_client.create_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
+        print("Success")
+
+    # Get latest statistics from index
+    current_collection_stats = collection.count()
+    print('Total number of embeddings in Chroma DB index is ' + str(current_collection_stats))
+    
+    
 ## TO DO GET MODEL DEPLOYMENT
 ## Need to get the below prgramatically in the future iterations
 MODEL_ACCESS_KEY = os.environ["CML_MODEL_KEY"]
@@ -165,8 +196,14 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
                 yield response[:i+1]
                 
         elif vector_db == "Chroma":
-            # TODO: sub this with call to Pinecone to get context chunks
-            response = "ERROR: Pinecone is not implemented for LLama yet"
+            # Vector search in Chroma
+            context_chunk, source = get_nearest_chunk_from_chroma_vectordb(collection, message)
+            
+            # Call CML hosted model
+            response = get_llama2_response_with_context(message, context_chunk, temperature, token_count)
+            
+            # Add reference to specific document in the response
+            response = f"{response}\n\n For additional info see: {url_from_source(source)}"
             
             # Stream output to UI
             for i in range(len(response)):
@@ -198,8 +235,14 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
                 yield response[:i+1]
                 
         elif vector_db == "Chroma":
-            # TODO: sub this with call to Pinecone to get context chunks
-            response = "ERROR: Chroma is not implemented for Bedrock calls yet"
+            # Vector search in Chroma
+            context_chunk, source = get_nearest_chunk_from_chroma_vectordb(collection, message)
+            
+            # Call CML hosted model
+            response = get_bedrock_response_with_context(message, context_chunk, temperature, token_count)
+            
+            # Add reference to specific document in the response
+            response = f"{response}\n\n For additional info see: {url_from_source(source)}"
             
             # Stream output to UI
             for i in range(len(response)):
@@ -243,6 +286,20 @@ def load_context_chunk_from_data(id_path):
     with open(id_path, "r") as f: # Open file in read mode
         return f.read()
 
+
+# Get embeddings for a user question and query Chroma vector DB for nearest knowledge base chunk
+def get_nearest_chunk_from_chroma_vectordb(collection, question):
+    ## Query Chroma vector DB 
+    ## This query returns the two most similar results from a semantic search
+    response = collection.query(
+                    query_texts=[question],
+                    n_results=1
+                    # where={"metadata_field": "is_equal_to_this"}, # optional filter
+                    # where_document={"$contains":"search_string"}  # optional filter
+    )
+    #print(results)
+    
+    return response['documents'][0][0], response['ids'][0][0]
 
 def get_bedrock_response_with_context(question, context, temperature, token_count):
     
