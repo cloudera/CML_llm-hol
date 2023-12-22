@@ -9,7 +9,6 @@ The goal of this hands-on lab is to explore and interact with a real LLM applica
 To begin we consider the LLM life cycle. This is a simplified view but helps us highlight some of the key components we need to consider when designing our LLM application. 
 
 ![Alt text](./assets/LLM-APP-PROCESS.png)
-![Alt text](./assets/LLM-APP-PROCESS.png)
 
 From left to right we see the major phases. Under each phase we see some considerations that need to be made. 
 After defining your use case requirements, which includes success criteria, four key decisions to be made are
@@ -36,8 +35,6 @@ This lab is broken up into the following 7 sections.
 8. Deploying Final Application
 9. Instruction Following
 
-:construction: 
-A great resource in the meantime is [this version of the Hands on Lab](https://github.com/pdefusco/CML_LLM_HOL_Workshop/tree/main). 
 
 ### Exploring Amazon Bedrock through CML
 
@@ -60,10 +57,14 @@ The key to generative AI is in its ability to generate fresh new content. There 
 In this section we'll see the power of CML as we run job to scrape the data we'd would like to add to our knowledge base, and then a sectond job that populates the pincone vector database. The jobs have already been created for you at setup. Lets start by defining the HTML you'd like to gather data from.
 
 **Scraping web data**
-For this exercise html links are already provided. There are 5 links to various subdomains of :
+For this exercise html links are already provided in folder 2_populate_vector_db in a file called 'html_links.txt'. There are 5 links to various subdomains of :
 https://docs.cloudera.com/machine-learning/cloud/
-They are all located in file called html_links.txt. 
 Anytime you point to a new location(s) you can update this file and then rerun the scraping job.
+
+When this project was a created a job was also created to run this scraping job. See below, but don't run it yet.
+
+![Alt text](./assets/scrape%20job.png)
+
 
 **Loading Pinecone**
 In this lab, we'll look at a number of ways to populate our vector database of choice. We'll review the following
@@ -77,10 +78,11 @@ In production you would likely opt for the second or third option. For this exce
 Let's begin by looking for the job section withing or project. And then select "New Job"
 ![Alt text](./assets/job%20create.png)
 
-No let's look at the fields we need to complete for this job. Most importatnly is to point the job to the underlying script (pinecone_vectordb_insert.py). CML Jobs are an extremely easy way to schedule jobs to run a certain times or on a dependency another job. In fact that is what we will be doing now. So that each time new html urls are scraped the vector data base is also populated.
+Now let's look at the fields we need to complete for this job. Most importatnly is to point the job to the underlying script (pinecone_vectordb_insert.py). CML Jobs are an extremely easy way to schedule jobs to run a certain times or on a dependency another job. In fact that is what we will be doing now. So that each time new html urls are scraped the vector data base is also populated.
 ![Alt text](./assets/job%20details.png)
 
-Now that you've created your job you can run it. 
+
+Great now, you've created your own job. However we can now run the scraping job to scrape or data, and the populate vector database job will kick off automatically after that. 
 
 ### Explore your data via Pinecone DB
 
