@@ -29,5 +29,6 @@ entries:
       - LLM
       - CML Labs
       - Model Deployment
+      - GPU
     git_url: "https://github.com/cloudera/CML_Deploy-Llama2-CML-Native-Model"
     is_prototype: true

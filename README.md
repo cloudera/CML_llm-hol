@@ -9,6 +9,7 @@ The goal of this hands-on lab is to explore and interact with a real LLM applica
 To begin we consider the LLM life cycle. This is a simplified view but helps us highlight some of the key components we need to consider when designing our LLM application. 
 
 ![Alt text](./assets/LLM-APP-PROCESS.png)
+![Alt text](./assets/LLM-APP-PROCESS.png)
 
 From left to right we see the major phases. Under each phase we see some considerations that need to be made. 
 After defining your use case requirements, which includes success criteria, four key decisions to be made are
@@ -22,6 +23,7 @@ This view considers not only the intial design of the LLM application, but one t
 
 Ultimately the lab aims to demonstrate the ease and flexibility in which users can build and modify end to end LLM applications.
 
+This lab is broken up into the following 7 sections.
 This lab is broken up into the following 7 sections.
 
 1. Exploring Amazon Bedrock through CML
