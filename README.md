@@ -108,3 +108,6 @@ The notebook first sets up the conatainer runtime paramters for the application 
 
 ### Switch Vector DB to Chroma DB
 
+We'll continue to expolore the modularity of the CML hosting of LLM applications. Now we switch over to a Chroma DB. Pinecone is a public data store offering great scalablity. Chroma DB is open source and offers extensible querying. Fundementally it is all about design flexibility, and being able to switch out model or vector db components per business requirements.
+
+
