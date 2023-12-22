@@ -65,7 +65,7 @@ Anytime you point to a new location(s) you can update this file and then rerun t
 **Loading Pinecone**
 In this exercise, we'll look at a number of ways to populate our vector database. One approach is to do this through a script - pinecone_vectordb_insert.py
 
-Although effective, a more automated way of doing this is to create a job. So that say after each time you've scraped new data, you can in turn populate the vector db. A CML job can be created a number of ways, but an automated way to to do this through an API. We'll look at this now through a jupyter notebook. For this look at the file called 'create_pinecone.ipynb'. Go through the notebook and run the cells.
+Although effective, a more automated way of doing this is to create a job. So that say after each time you've scraped new data, you can in turn populate the vector db. A CML job can be created a number of ways. We will start , but an automated way to to do this through an API. We'll look at this now through a jupyter notebook. For this look at the file called 'create_pinecone.ipynb'. Go through the notebook and run the cells.
 
 You've now succesfully created a new job and run it as well. By looking at your project's job section you should see a new job created that starts with "Populate Pinecone Vector DB ... "
 
@@ -102,12 +102,35 @@ Next let's look at how an application can be deployed programatically.
 The notebook first sets up the conatainer runtime paramters for the application - the python version, GPU (if required), and editor. After this is complete the application build request is exectuted. Here we define the resources required, based on expected usage. Most importantly we define the script running the application.
 
 
+#### Interacting with Application
+Take some time to ask different questions about your data. You can try changing the available configurations. Here are some examples to start with. Note the first time we tried with no vector database, the model responds with no answer.
 
+![alt text](.assets/../assets/lll-wo-vdb.png)
+The second time however we are able to get a good answer to our question.
+![alt text](.assets/../assets/llm-w-pc.png)
 
+Try playing with some question/model/db/parameter combinations!
 
 
 ### Switch Vector DB to Chroma DB
 
 We'll continue to expolore the modularity of the CML hosting of LLM applications. Now we switch over to a Chroma DB. Pinecone is a public data store offering great scalablity. Chroma DB is open source and offers extensible querying. Fundementally it is all about design flexibility, and being able to switch out model or vector db components per business requirements.
 
+We consider the step using the CML API, which facilitates a programmatic approach to job creation and execution, offering significant advantages in terms of automation and workflow management. This method enhances the efficiency of job management, allowing for more streamlined and effective data processing. Under the folder "5_populate_local_chroma_db" open create_chroma_job.ipynb. 
+
+Notice that first we set up a client and define a runtime for the job we can use in the future.
+In the final step we create and run the job. This step points to the script responsible for the job (populate_chroma_vectors.py).
+
+### Using Langchain
+
+So far we have seen a number of components that come together to allow us to interact with our data - the model, the vector data base, the application, the code base, and finally the underlying platform. Langchain is a powerfull library that offers and flexible way to chain those (plus more) components together. In this lab we'll look at a particular use of lang chain, although it can be for more things such as agents that can take actions based on LLMs responses. For more information see : [Intro to Langchain](https://python.langchain.com/docs/get_started/introduction)
+
+For this lab we'll be looking at using langchain to 'chain' together teh following components:
+- Amazon Bedrock
+- Chroma vector data base
+- Prompt Template
+
+We've seen the first two components in action so let's quickly discuss why Prompt templates might be useful. You've likely heard of prompt engineering which focuses on developing prompts that tailor the models responses to you requirements. A common example is to use few shots prompts, which essential provide the model with a few examples of how you expect it to respond to certain inputs. Additionally you can prompt a model to answer a certain way. As might ask a model to explain a concept in great detail or simplly an overview. All these prompts can be aided with the use of prompt templates.
+
+The beauty of using langchain for our example once we've created the chain object we do not have to rely on customer functions to query the vector store, then send path to LLM for a reponse. This is all done in a single function. The pieces of 'chain' can then be replaced when needed.
 
