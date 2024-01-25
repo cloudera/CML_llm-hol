@@ -1,4 +1,6 @@
 import os
+import cmlapi
+import sys
 import gradio as gr
 import pinecone
 from typing import Any, Union, Optional
@@ -11,6 +13,8 @@ import time
 from typing import Optional
 import boto3
 from botocore.config import Config
+
+
 
 from huggingface_hub import hf_hub_download
 
@@ -39,8 +43,22 @@ if USE_PINECONE:
 
 ## TO DO GET MODEL DEPLOYMENT
 ## Need to get the below prgramatically in the future iterations
-MODEL_ACCESS_KEY = os.environ["CML_MODEL_KEY"]
-MODEL_ENDPOINT = "https://modelservice.ml-8ac9c78c-674.se-sandb.a465-9q4k.cloudera.site/model?accessKey=" + MODEL_ACCESS_KEY
+client = cmlapi.default_client(url=os.getenv("CDSW_API_URL").replace("/api/v1", ""), cml_api_key=os.getenv("CDSW_APIV2_KEY"))
+projects = client.list_projects(search_filter=json.dumps({"name": "Shared LLM Model for Hands on Lab"}))
+project = projects.projects[0]
+
+## Here we assume that only one model has been deployed in the project, if this is not true this should be adjusted (this is reflected by the placeholder 0 in the array)
+model = client.list_models(project_id=project.id)
+selected_model = model.models[0]
+
+## Save the access key for the model to the environment variable of this project
+MODEL_ACCESS_KEY = selected_model.access_key
+
+MODEL_ENDPOINT = os.getenv("CDSW_API_URL").replace("https://", "https://modelservice.").replace("/api/v1", "/model?accessKey=")
+MODEL_ENDPOINT = MODEL_ENDPOINT + MODEL_ACCESS_KEY
+
+#MODEL_ACCESS_KEY = os.environ["CML_MODEL_KEY"]
+#MODEL_ENDPOINT = "https://modelservice.ml-8ac9c78c-674.se-sandb.a465-9q4k.cloudera.site/model?accessKey=" + MODEL_ACCESS_KEY
 
 if os.environ.get("AWS_DEFAULT_REGION") == "":
     os.environ["AWS_DEFAULT_REGION"] = "us-west-2"
