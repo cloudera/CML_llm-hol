@@ -118,7 +118,7 @@ def main():
     # Configure gradio QA app 
     print("Configuring gradio app")
 
-    DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party solutions for LLMs and Vector Databases, as well as internally hosted models and vector DBs."
+    DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party solutions for LLMs and Vector Databases, as well as internally hosted models and vector DBs. The prototype does not yet implement chat history and session context - every prompt is treated as a brand new one."
     
     # Create the Gradio Interface
     demo = gr.ChatInterface(
@@ -147,13 +147,16 @@ def main():
 # Helper function for generating responses for the QA app
 def get_responses(message, history, model, temperature, token_count, vector_db):
     
-    #print("%s %s %s %s" % (model, temperature, token_count, vector_db))
-    # AWS Bedrock Claude v2.1 0.5 50 Chroma
+    
+    # Process chat history
+    chat_history_string = '; '.join([strng for xchng in history for strng in xchng])
+    #print(f"Chat so far {history}")
+    
     
     if model == "Local Llama 2 7B":
         
         if vector_db == "None":
-            context_chunk = ""
+            context_chunk = chat_history_string
             response = get_llama2_response_with_context(message, context_chunk, temperature, token_count)
         
             # Stream output to UI
@@ -162,8 +165,6 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
                 yield response[:i+1]
                 
         elif vector_db == "Pinecone":
-            # TODO: sub this with call to Pinecone to get context chunks
-            response = "ERROR: Pinecone is not implemented in the app yet"
             
             # Stream output to UI
             for i in range(len(response)):
@@ -173,7 +174,8 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
     elif model == "AWS Bedrock Claude v2.1":
         if vector_db == "None":
             # No context call Bedrock
-            response = get_bedrock_response_with_context(message, "", temperature, token_count)
+            context_chunk = chat_history_string
+            response = get_bedrock_response_with_context(message, context_chunk, temperature, token_count)
         
             # Stream output to UI
             for i in range(len(response)):

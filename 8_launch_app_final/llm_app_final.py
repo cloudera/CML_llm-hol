@@ -151,7 +151,7 @@ def main():
     # Configure gradio QA app 
     print("Configuring gradio app")
 
-    DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party solutions for LLMs and Vector Databases, as well as internally hosted models and vector DBs."
+    DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party solutions for LLMs and Vector Databases, as well as internally hosted models and vector DBs. The prototype does not yet implement chat history and session context - every prompt is treated as a brand new one."
     
     # Create the Gradio Interface
     demo = gr.ChatInterface(
