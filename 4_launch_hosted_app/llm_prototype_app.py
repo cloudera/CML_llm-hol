@@ -13,13 +13,10 @@ import time
 from typing import Optional
 import boto3
 from botocore.config import Config
-
-
-
 from huggingface_hub import hf_hub_download
 
 
-USE_PINECONE = True # Set this to avoid any Pinecone calls
+USE_PINECONE = True # Set this to False avoid any Pinecone calls
 
 EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
 
@@ -57,9 +54,7 @@ MODEL_ACCESS_KEY = selected_model.access_key
 MODEL_ENDPOINT = os.getenv("CDSW_API_URL").replace("https://", "https://modelservice.").replace("/api/v1", "/model?accessKey=")
 MODEL_ENDPOINT = MODEL_ENDPOINT + MODEL_ACCESS_KEY
 
-#MODEL_ACCESS_KEY = os.environ["CML_MODEL_KEY"]
-#MODEL_ENDPOINT = "https://modelservice.ml-8ac9c78c-674.se-sandb.a465-9q4k.cloudera.site/model?accessKey=" + MODEL_ACCESS_KEY
-
+# Double check default region
 if os.environ.get("AWS_DEFAULT_REGION") == "":
     os.environ["AWS_DEFAULT_REGION"] = "us-west-2"
 
@@ -128,7 +123,6 @@ def main():
     # Create the Gradio Interface
     demo = gr.ChatInterface(
         fn=get_responses, 
-        #examples=[["What is Cloudera?", "AWS Bedrock Claude v2.1", 0.5, "100"], ["What is Apache Spark?", 0.5, "100"], ["What is CML HoL?", 0.5, "100"]], 
         title="Enterprise Custom Knowledge Base Chatbot with Llama2",
         description = DESC,
         additional_inputs=[gr.Radio(['Local Llama 2 7B', 'AWS Bedrock Claude v2.1'], label="Select Foundational Model", value="AWS Bedrock Claude v2.1", visible=False), 
