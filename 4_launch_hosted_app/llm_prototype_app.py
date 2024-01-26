@@ -123,9 +123,9 @@ def main():
     # Create the Gradio Interface
     demo = gr.ChatInterface(
         fn=get_responses, 
-        title="Enterprise Custom Knowledge Base Chatbot with Llama2",
+        title="Enterprise Custom Knowledge Base Chatbot",
         description = DESC,
-        additional_inputs=[gr.Radio(['Local Llama 2 7B', 'AWS Bedrock Claude v2.1'], label="Select Foundational Model", value="AWS Bedrock Claude v2.1", visible=False), 
+        additional_inputs=[gr.Radio(['Local Mistral 7B', 'AWS Bedrock Claude v2.1'], label="Select Foundational Model", value="AWS Bedrock Claude v2.1", visible=False), 
                            gr.Slider(minimum=0.01, maximum=1.0, step=0.01, value=0.5, label="Select Temperature (Randomness of Response)"),
                            gr.Radio(["50", "100", "250", "500", "1000"], label="Select Number of Tokens (Length of Response)", value="250"),
                            gr.Radio(['None', 'Pinecone'], label="Vector Database Choices", value="None")],
@@ -149,14 +149,14 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
     
     
     # Process chat history
-    chat_history_string = '; '.join([strng for xchng in history for strng in xchng])
+    #chat_history_string = '; '.join([strng for xchng in history for strng in xchng])
     #print(f"Chat so far {history}")
     
     
-    if model == "Local Llama 2 7B":
+    if model == "'Local Mistral 7B":
         
         if vector_db == "None":
-            context_chunk = chat_history_string
+            context_chunk = ""
             response = get_llama2_response_with_context(message, context_chunk, temperature, token_count)
         
             # Stream output to UI
@@ -174,7 +174,7 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
     elif model == "AWS Bedrock Claude v2.1":
         if vector_db == "None":
             # No context call Bedrock
-            context_chunk = chat_history_string
+            context_chunk = ""
             response = get_bedrock_response_with_context(message, context_chunk, temperature, token_count)
         
             # Stream output to UI

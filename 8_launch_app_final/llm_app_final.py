@@ -157,9 +157,9 @@ def main():
     demo = gr.ChatInterface(
         fn=get_responses, 
         #examples=[["What is Cloudera?", "AWS Bedrock Claude v2.1", 0.5, "100"], ["What is Apache Spark?", 0.5, "100"], ["What is CML HoL?", 0.5, "100"]], 
-        title="Enterprise Custom Knowledge Base Chatbot with Llama2",
+        title="Enterprise Custom Knowledge Base Chatbot",
         description = DESC,
-        additional_inputs=[gr.Radio(['Local Llama 2 7B', 'AWS Bedrock Claude v2.1'], label="Select Foundational Model", value="AWS Bedrock Claude v2.1"), 
+        additional_inputs=[gr.Radio(['Local Mistral 7B', 'AWS Bedrock Claude v2.1'], label="Select Foundational Model", value="AWS Bedrock Claude v2.1"), 
                            gr.Slider(minimum=0.01, maximum=1.0, step=0.01, value=0.5, label="Select Temperature (Randomness of Response)"),
                            gr.Radio(["50", "100", "250", "500", "1000"], label="Select Number of Tokens (Length of Response)", value="250"),
                            gr.Radio(['None', 'Pinecone', 'Chroma'], label="Vector Database Choices", value="None")],
@@ -181,7 +181,7 @@ def main():
 # Helper function for generating responses for the QA app
 def get_responses(message, history, model, temperature, token_count, vector_db):
     
-    if model == "Local Llama 2 7B":
+    if model == "Local Mistral 7B":
         
         if vector_db == "None":
             context_chunk = ""
