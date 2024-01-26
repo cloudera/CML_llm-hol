@@ -26,16 +26,34 @@ Ultimately the lab aims to demonstrate the ease and flexibility in which users c
 
 This lab is broken up into the following 7 sections.
 
-1. Exploring Amazon Bedrock through CML
-2. Scrape and ingest data and populate Pinecone DB
-3. Explore your data via Pinecone DB
-4. Deploy a CML application
-5. Switch Vector DB to Chroma DB
-6. Langchain
-7. Use a locally hosted LLama2 model.
-8. Deploying Final Application
-9. Instruction Following
 
+- [Large Language Models with Cloudera](#large-language-models-with-cloudera)
+    - [Overview](#overview)
+    - [Lab Flow](#lab-flow)
+      - [Getting into CML](#getting-into-cml)
+      - [1. Exploring Amazon Bedrock through CML](#1-exploring-amazon-bedrock-through-cml)
+        - [Defining how Claude will work and respond](#defining-how-claude-will-work-and-respond)
+        - [Model Parameters](#model-parameters)
+      - [2. Scrape and ingest data and populate Pinecone DB](#2-scrape-and-ingest-data-and-populate-pinecone-db)
+      - [3. Explore your data via Pinecone DB](#3-explore-your-data-via-pinecone-db)
+      - [4. Deploy a CML application](#4-deploy-a-cml-application)
+        - [Deploying your application via the UI](#deploying-your-application-via-the-ui)
+        - [Application script](#application-script)
+        - [Deploying your application through the API.](#deploying-your-application-through-the-api)
+        - [Interacting with Application](#interacting-with-application)
+      - [5. Switch Vector DB to Chroma DB](#5-switch-vector-db-to-chroma-db)
+      - [6. Langchain](#6-langchain)
+      - [7. Use a locally hosted LLama2 model](#7-use-a-locally-hosted-llama2-model)
+      - [8. Launch Final Application](#8-launch-final-application)
+      - [9. Instruction Following](#9-instruction-following)
+
+#### Getting into CML
+
+Your link will take you direction to the screen where you can manage access all you data services. 
+
+Click on the "Machine Learning" icon.
+
+![Alt-text](./assets/into-3.png)
 
 #### 1. Exploring Amazon Bedrock through CML
 
@@ -75,7 +93,7 @@ The key to generative AI is in its ability to generate fresh new content. There 
   
 ![Alt text](./assets/bedrock-parameters.png)
 
-#### 2.  Scrape and ingest data and populate Pinecone DB
+#### 2. Scrape and ingest data and populate Pinecone DB
 
 In this section we'll see the power of CML as we run job to scrape the data we'd would like to add to our knowledge base, and then a second job that populates the pincone vector database. The first job - Pull and Convert HTMLS to TXT - has already been created for you at setup. 
 
@@ -262,7 +280,7 @@ Finally we can see Lang Chain in action:
 ![Alt-text](./assets/LangChain-function.png)
 
 
-#### 7. Use a locally hosted LLama2 model.
+#### 7. Use a locally hosted LLama2 model
 
 In this example we're going to look at yet another way of interacting with our deployed models. In earlier examples that used notebooks, we relied on code to aid in the process of our querying the vector db, then interacting with the model. We now look at a scenario that resembles how the interaction may take place in production - with a model and vector store already deployed. This is facilitated through the use of cml's apis. 
 
@@ -299,9 +317,43 @@ We are now ready to start using the endpoint to ask the model quesitons. Bleow w
 
 #### 8. Launch Final Application
 
+We now are going to put all the pieces together into a final application that allows us to 
+- Select our model
+- Select our vector store of choice
+
+This expemplifies the extensibility for LLM apps provided by CML. 
+
+To get started, we're going to revisit the application that we created in step 4. 
+
+a. Go to main project screen and click on applications, there you will see the application created in step 4 
+
+![Alt-text](./assets/step_8-9.png)
+
+b. Click on the three dots on the top right hand corner and select "Application Details"
+
+![Alt-text](./assets/step_8-6.png)
+
+c. Select the top section "Settings". Now you are going to select the new file for the application. Click on the folder icon under the "Script" section. Then click on the file path:
+ 8_launch_app_final/llm_app_final.py
+
+![Alt-text](./assets/step_8-2.png)
+
+d. When done, click on "Update Application"
+
+![Alt-text](./assets/step_8-4.png)
+
+e. You're now taken to the actual application. Click on on the section called "Additional Inputs"
+
+![Alt-text](./assets/step_8-8.png)
+
+f. From here you can see that all application parameters available. Select the model, vector db, and other parameters of your choice
+
+![Alt-text](./assets/step_8-10.png)
+
+g. Finally, you're ready to start asking questions!
 
 
-### Instruction Following
+#### 9. Instruction Following
 
 We'll now look at an example, that uses the Bloom model for instruction following. For this section you'll need a session with a GPU.
 
