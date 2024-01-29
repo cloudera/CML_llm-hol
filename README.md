@@ -51,47 +51,60 @@ This lab is broken up into the following 7 sections.
 
 Your link will take you direction to the screen where you can manage access all you data services. 
 
-Click on the "Machine Learning" icon.
+a. Click on the "Machine Learning" icon.
 
 ![Alt-text](./assets/into-3.png)
 
+b. Now you should see the CML page with helpful information displayed on your dashboard. All you work will be done in the context of projects. In the interest of time, an LLM Hands on Lab project has already been created for you. If you are new to CML, take a moment to explore available information through the dashboard. We'll cover many of the features on the left hand column through out the lab. **When ready click into the project**:
+
+![Alt-text](./assets/cml_intro-1.png)
+
 #### 1. Exploring Amazon Bedrock through CML
 
-In this first section, we'll interact with a model (Anthropic's Claude) via Amazon's Bedrock in a jupyter notebook environment from within CML.
+In this first section, we'll interact with a model (Anthropic's Claude) via Amazon's Bedrock in a jupyter notebook environment from within CML.Take a moment to familiarize yourself with the project page. Notice that your project now has all required files (your code base), a read me below, project specific options in the left hand column, plus more. 
 
-Start a session as follows:
+a. To begin working within the project we need to start a session. Start a session as follows:
 
 ![Alt text](./assets/open-session.png)
 
-Open a Jupyter session with python 3.10. No need for a GPU.
+b. Give you session a name. 
+The name is not that important, we will come back and use this sessoin in future steps. Open a Jupyter session with python 3.10. No need for a GPU.
+
+c. Select JupyterLab as editor, Python 3.10 for Kernel, and Standard as your addition. You do not need to enable spark
 
 ![Alt text](./assets/Session-settings.png)
 
-Open the following folder:
+d. You will see the following screen. A container is now available with the JupyterLab runtime. Open the following folder called "1_hosted_models":
 
 ![Alt text](./assets/bedrock-folder.png)
 
-and jupyter notebook file:
+e. Double click into the file called "prototype_with_aws_bedrock.ipynb" 
 
 ![Alt text](./assets/bedrock-file.png)
 
+f. Let's walk through what the notebook does. As you walk through the cells run each cell (you can use enter+shift). The first cell captures the AWS creditials (this has been done for you) and defines the funtion to set up the client. 
 
-We begin by setting up our bedrock client. At this point your AWS credentials have already been set up as environment variables. 
+g. The next cell uses the function to set up the bedrock client. At this point your AWS credentials have already been set up as environment variables. 
 
 ![Alt text](./assets/bedrock-client-setup.png)
 
 ##### Defining how Claude will work and respond
-In this section we'll provide instructions to the model - how we would like it to respond to our prompts. In this case we are asking it to provide a summary of input text. Try playing with these settings by changing the input text, or even in the instuctions in how you would like Claude to responde to your prompts.
+In this section we'll provide instructions to the model - how we would like it to respond to our prompts. In this case we are asking it to provide a summary of input text. 
+
+h. The next two cells define instruction text, how the model should interact with you. The following cell defines the prompt iteself. Try playing with these settings by changing the input text, or even in the instuctions in how you would like Claude to responde to your prompts.
 
 ![Alt text](./assets/bedrock-text-summarization.png)
 
 ##### Model Parameters
-The key to generative AI is in its ability to generate fresh new content. There are multiple 'knobs' we have available to modify how random (or perhaps creative) the model response can be. Try playing with the following to see if you can see model response behaviour changing. If we consider the model's - next word prediction to a softmax out, we can modify how the model picks from this distribution: 
+The key to generative AI is in its ability to generate fresh new content. There are multiple 'knobs' we have available to modify how random (or perhaps creative) the model response can be. Below is a brief description of each paramter. 
 - Temperature - The value of 1 leaves the distribution unchanged. Higher values will flatten the distribution, while lower values increase already higher weight predictions.
 - Top k - Limits the model's selection of word responses to the top k most probable
 - Top p - Limits the model's selection of the word responses to the top p percent of the distribution
-  
+
+i. Try adjusting these to see if the model's response behaviour changes noticeably. 
+
 ![Alt text](./assets/bedrock-parameters.png)
+
 
 #### 2. Scrape and ingest data and populate Pinecone DB
 
@@ -102,7 +115,7 @@ For this exercise html links are already provided in folder 2_populate_vector_db
 https://docs.cloudera.com/machine-learning/cloud/
 Anytime you point to a new location(s) you can update this file and then rerun the scraping job.
 
-As mentoioned earlier, when the project was a created a job was also created to run this scraping job. See below, but don't run it yet.
+a. As mentoioned earlier, when the project was a created a job was also created to run this scraping job. See below, but don't run it yet.
 
 ![Alt text](./assets/html-scrape-1.png)
 
@@ -116,25 +129,34 @@ In this lab, we'll look at a number of ways to populate our vector database of c
 
 In production you would likely opt for the second or third option. For this excerise, it's useful create a job through the ui so we can understand the process a bit better. 
 
-Let's begin by looking for the job section withing or project. Click "Jobs":
+b. Let's begin by looking for the job section withing or project. Click "Jobs":
 
 ![Alt text](./assets/html-scrape-jobs.png)
 
- And then select "New Job":
+ c. Select "New Job":
 
 ![Alt text](./assets/html-scrape-new-job.png)
 
-Once you see the following sreen name the job. We then need to assign the script - (pinecone_vectordb_insert.py), the drop down will allow you to provide teh full path. CML Jobs are an extremely easy way to schedule jobs to run at certain times or on a dependency another job. In fact we'll be creating this job as a dependency to the other job already created for you. Under Schedule, select "Dependent", then select the job "Pull and Convert HTMLS to TXT". Finally click "Create Job"
+d. Once you see the following screen, name the job. 
+
+e. Assign the script - (2_populate_vector_db/pinecone_vectordb_insert.py), the dropdown will allow you to provide th4 full path. 
+
+CML Jobs are an extremely easy way to schedule jobs to run at certain times or on a dependency another job. In fact we'll be creating this job as a dependency to the other job already created for you. 
+
+f. Under Schedule, select "Dependent", then select the job "Pull and Convert HTMLS to TXT". Finally click "Create Job"
+
 ![Alt text](./assets/html-scrape-job-parameters.png)
 
 
 Great! Now you've created your own job! We can now run the scraping job "Pull and Convert HTMLS to TXT", and the populate vector database job will kick off automatically after that. 
 
-Go back to "Jobs" (as shown above), you will see the following, and then click on "run as" for the "Pull and Convert HTMLS to TXT" job. 
+g. Go back to "Jobs" (as shown above in substep b)
+
+h. Click on "run as" for the "Pull and Convert HTMLS to TXT" job. 
 
 ![Alt text](./assets/html-scrape-run-job.png)
 
-Make sure you confirm both jobs ran succesfully:
+Make sure you confirm both jobs ran succesfully.
 
 ![Alt text](./assets/html-scrape-post-run-job.png)
 
