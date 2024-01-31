@@ -41,7 +41,7 @@ if USE_PINECONE:
 ## TO DO GET MODEL DEPLOYMENT
 ## Need to get the below prgramatically in the future iterations
 client = cmlapi.default_client(url=os.getenv("CDSW_API_URL").replace("/api/v1", ""), cml_api_key=os.getenv("CDSW_APIV2_KEY"))
-projects = client.list_projects(search_filter=json.dumps({"name": "Shared LLM Model for Hands on Lab"}))
+projects = client.list_projects(include_public_projects=True, search_filter=json.dumps({"name": "Shared LLM Model for Hands on Lab"}))
 project = projects.projects[0]
 
 ## Here we assume that only one model has been deployed in the project, if this is not true this should be adjusted (this is reflected by the placeholder 0 in the array)
