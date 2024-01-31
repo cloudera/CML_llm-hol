@@ -31,6 +31,10 @@ visited_urls = set()
 max_retries = 5
 retry_delay_seconds = 2
 
+# Clean up string
+def remove_non_ascii(s):
+    return "".join(i for i in s if ord(i) < 128)
+
 def get_tld(url):
     parsed_url = urlparse(url)
     return f"{parsed_url.scheme}://{parsed_url.netloc}"
@@ -74,8 +78,13 @@ def extract_and_write_text(url, base_path, tld):
     
     os.makedirs(directory_path, exist_ok=True)
     
+    
+    
     with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(soup.get_text())
+        soup_text = soup.get_text()
+        soup_text = soup_text.replace('\n', ' ')
+        soup_text = remove_non_ascii(soup_text)
+        f.write(soup_text)
 
 def main():
     base_path = "/home/cdsw/data"
