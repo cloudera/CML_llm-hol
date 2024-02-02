@@ -171,15 +171,6 @@ Take some time to ask different questions about CML. Soe examples to get you sta
 
 Also, note the parameters towards the bottom that you can configure to change the way your application responds. You can choose to use Pinecone or not (i.e. no RAG), regulate length of response, and adjust the _Temperature_ (i.e. creativity/randomness) of the response. 
 
-### Deploying your application through the API. 
-Next let's look at how an application can be deployed programatically. Go back to the session, you created in step 1, if still open. Follow the steps below ,following the folder path then the file to open.
-
-![Alt-text](./assets/deploy-cml-api-folder.png)
-
-![Alt-text](./assets/deploy-cml-api-file.png)
-
-The notebook first sets up the conatainer runtime parameters for the application - the python version, GPU (if required), and editor. After this is complete the application build request is exectuted. Here we define the resources required, based on expected usage. Most importantly we define the script running the application.
-
 ## 5. Switch Vector DB to Chroma DB
 
 We'll continue to explore CML's modularity for hosting LLM applications. We will now switch over to a Chroma DB. Pinecone is a public data store offering great scalability. Chroma DB is open source and offers extensible querying. Fundamentally, a good LLM application offers design flexibility, by allowing users to switch out the models or vector db components per business requirements.
