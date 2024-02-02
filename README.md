@@ -1,39 +1,18 @@
 # Large Language Models with Cloudera
-**Hands on Lab for Cloudera Machine Learning**
 
-:wave: and welcome.
+The goal of this hands-on lab is to explore Cloudera Machine Learning (CML) through the lens of LLM RAG architecture. Starting from a simple Jupyter notebook and finishing with a complete chatbot application, participants will get to know some of the key CML features and advantages. In a real-world scenario, changing business requirements and technology advancements necessitate agility and CML is a great tool to provide that to Data Science practitioners. 
 
-## Overview
-The goal of this hands-on lab is to explore and interact with a real LLM application. Additionally, we gain experience in configuring components of the application for the given task and performance desired. In a real-world scenario, changing business requirements and technology advancements necessitate agility in interchanging these components. 
+Because the applications of LLMs can be quite broad across industries, it is useful to hone in on a particular use case for the purposes of this lab. 
 
-To begin we consider the LLM life cycle. This is a simplified view but helps us highlight some of the key components we need to consider when designing our LLM application. 
-
-![Alt text](./assets/LLM-APP-PROCESS.png)
-
-From left to right we see the major phases. Under each phase we see some considerations that need to be made. 
-After defining your use case requirements, which includes success criteria, four key decisions to be made are
-
-1. Model Selection
-2. Model Adaptation (Fine-tuning, RAG, More)
-3. Vector Database selection (if using RAG)
-4. Application Choice
-
-This view considers not only the intial design of the LLM application, but one that allows for your application to adapt and evolve over time. For example, newer more performant models may be released that may benefit you application. This same might be true for new vector databases.  
-
+> **Lab use case:** Software vendor is looking to pilot an LLM-based chat interface to improve employee productivity when searching product documentation. 
+ 
 ## Lab Flow
 
-Ultimately the lab aims to demonstrate the ease and flexibility in which users can build and modify end to end LLM applications.
+Ultimately the lab aims to demonstrate the ease and flexibility in which users can prototype new approaches and integrate them into fully-packages solutions like LLM applications.
 
-This lab is broken up into the following 7 sections.
-
-
-- [Large Language Models with Cloudera](#large-language-models-with-cloudera)
-  - [Overview](#overview)
-  - [Lab Flow](#lab-flow)
-  - [Getting into CML](#getting-into-cml)
+There are currently 8 exercises in the lab, and others will be added soon. It is important to follow the exercise order, as there are dependencies between different stages. 
+  - [0. Getting into CML](#getting-into-cml)
   - [1. Exploring Amazon Bedrock through CML](#1-exploring-amazon-bedrock-through-cml)
-    - [Defining how Claude will work and respond](#defining-how-claude-will-work-and-respond)
-    - [Model Parameters](#model-parameters)
   - [2. Scrape and ingest data and populate Pinecone DB](#2-scrape-and-ingest-data-and-populate-pinecone-db)
   - [3. Explore your data via Pinecone DB](#3-explore-your-data-via-pinecone-db)
   - [4. Deploy a CML application](#4-deploy-a-cml-application)
@@ -45,81 +24,58 @@ This lab is broken up into the following 7 sections.
   - [6. Langchain](#6-langchain)
   - [7. Use a locally hosted LLama2 model](#7-use-a-locally-hosted-llama2-model)
   - [8. Launch Final Application](#8-launch-final-application)
-  - [9. Instruction Following](#9-instruction-following)
 
-## Getting into CML
+## 0. Getting into CML
 
-Your link will take you direction to the screen where you can manage access all you data services. 
+Your SSO login link will take you direction to the home screen of Cloudera Data Platform. From here you can access CML - one of its Data Services.
 
-> **a**. Click on the "Machine Learning" icon.
-> **b**, Then click workspace called "llmhol-aw.wksp"
+> **0a.** Click on the "Machine Learning" icon.
 
-![Alt-text](./assets/intro_1.png)
+> **0b.** Then click on ML Workspace called _llmhol-aw-wksp_ (the name may vary for your lab).
+![Control Plane to CML](./assets/intro_1.png)
 
-> **c**. Now you should see the CML page with helpful information displayed on your dashboard. All you work will be done in the context of projects. In the interest of time, an LLM Hands on Lab project has already been created for you. If you are new to CML, take a moment to explore available information through the dashboard. We'll cover many of the features on the left hand column through out the lab. **When ready click into the project**:
+If you are new to CML, take a moment to explore available information through the dashboard.  
 
+Concept of _projects_ is used to organize the workspace. Each project is typically linked to a remote repository (e.g. git) and can have multiple collaborators working on it. In the interest of time, a _Hands on Lab Workshop with LLM_ project has already been created for you and you are the sole _Owner_ of that project. 
+
+> **0c.** When ready click into the project:
 ![Alt-text](./assets/cml_intro-1.png)
+
+Take a moment to familiarize yourself with the project page. Notice that your project now has all required files (your code base), a readme below, project specific options in the left hand column, plus more. Throughout the lab you will use many of the features listed here.
 
 ## 1. Exploring Amazon Bedrock through CML
 
-In this first section, we'll interact with a model (Anthropic's Claude) via Amazon's Bedrock in a jupyter notebook environment from within CML.Take a moment to familiarize yourself with the project page. Notice that your project now has all required files (your code base), a read me below, project specific options in the left hand column, plus more. 
+In this first section, we'll interact with a model (Anthropic's Claude) via Amazon's Bedrock service. To do this we will start a _Session_ with a Jupyter notebook UI. 
 
->**1a.** To begin working within the project we need to start a session. Start a session as follows:
-
+>**1a.** Start a session by clicking _New Session_ in the top right corner. Alternatively you can click on _Sessions_ in the sidebar and click _New Session_ there.
 ![Alt text](./assets/open-session.png)
 
->**1b.** Give you session a name. 
-The name is not that important, we will come back and use this sessoin in future steps. Open a Jupyter session with python 3.10. No need for a GPU.
+>**1b.** Give you session a name (e.g. "Jupyter Rocks!"). 
+> For **Editor** select _JupyterLab_ 
+> For **Kernel** select _Python 3.10_
+> For **Edition** select _Nvidia GPU_ 
+> Leave the other settings as is.
+![Session setup UI](./assets/Session-settings.png)
 
->**1c.** Select JupyterLab as editor, Python 3.10 for Kernel, and NVidia GPUrd as your addition. You do not need to enable spark
+>**1c.** Click _Start Session_ in the bottom right.
 
-![Alt text](./assets/Session-settings.png)
+>**1d.** After a few seconds your isolated compute pod, running Jupyter UI, with Python 3.10 Kernel and additional GPU libraries will be ready. 
 
->**1d.** You will see the following screen. A container is now available with the JupyterLab runtime. Open the following folder called "1_hosted_models":
+>**1e.** A pop-up will open suggesting data connection code snippets to get started. You can select _Don't show me this again_ and close the pop-up window.
 
-![Alt text](./assets/bedrock-folder.png)
-
->**1e.** Double click into the file called "prototype_with_aws_bedrock.ipynb" 
-
+> **1f.** You will now see a familiar Jupyter notebook interface. In the left navigation panel go to ```1_hosted_models``` folder and open ```prototype_with_aws_bedrock.ipynb``` by double-clicking it.
 ![Alt text](./assets/bedrock-file.png)
 
->**1f.** Let's walk through what the notebook does. As you walk through the cells run each cell (you can use enter+shift). The first cell captures the AWS creditials (this has been done for you) and defines the funtion to set up the client. 
-
->**1g.** The next cell uses the function to set up the bedrock client. At this point your AWS credentials have already been set up as environment variables. 
-
+>**1g.** As you walk through the notebook review the explanations and run each cell (you can use ```Enter+Shift``` or ```Command+Enter```). When you are finished going through the notebook come back to this guide. 
 ![Alt text](./assets/bedrock-client-setup.png)
 
-### Defining how Claude will work and respond
-In this section we'll provide instructions to the model - how we would like it to respond to our prompts. In this case we are asking it to provide a summary of input text. 
-
->**1h.** The next two cells define instruction text, how the model should interact with you. The following cell defines the prompt iteself. Try playing with these settings by changing the input text, or even in the instuctions in how you would like Claude to responde to your prompts.
-
-![Alt text](./assets/bedrock-text-summarization.png)
-
-### Model Parameters
-The key to generative AI is in its ability to generate fresh new content. There are multiple 'knobs' we have available to modify how random (or perhaps creative) the model response can be. Below is a brief description of each paramter. 
-- Temperature - The value of 1 leaves the distribution unchanged. Higher values will flatten the distribution, while lower values increase already higher weight predictions.
-- Top k - Limits the model's selection of word responses to the top k most probable
-- Top p - Limits the model's selection of the word responses to the top p percent of the distribution
-
->**1i.** Try adjusting these to see if the model's response behaviour changes noticeably. 
-
-![Alt text](./assets/bedrock-parameters.png)
-
+:pencil2: You have now gotten familiar with creating a CML session, working with JupyterLab editor and interacted with a 3rd party LLM provider. All within an isolated and secure compute pod.
 
 ## 2. Scrape and ingest data and populate Pinecone DB
 
-In this section we'll see the power of CML as we run job to scrape the data we'd would like to add to our knowledge base, and then a second job that populates the pincone vector database. The first job - Pull and Convert HTMLS to TXT - has already been created for you at setup. 
+In this section you will define a CML _Job_ to load text data into [Pinecone](https://www.pinecone.io/) vector database. Jobs are responsible for running scripts in a specific and isolated environment (just like sessions from exercise 1).  Jobs can can be scheduled, run on-demand, or be joined together into pipelines. 
 
-**Scraping web data**
-For this exercise html links are already provided in folder 2_populate_vector_db in a file called 'html_links.txt'. There are 5 links to various subdomains of :
-https://docs.cloudera.com/machine-learning/cloud/
-Anytime you point to a new location(s) you can update this file and then rerun the scraping job.
-
->**2a.** As mentoioned earlier, when the project was a created a job was also created to run this scraping job. See below, but don't run it yet.
-
-![Alt text](./assets/html-scrape-1.png)
-
+For this exercise html links are already provided in  ```2_populate_vector_db/html_links.txt``` These sample links point to various pages of [Cloudera's CML documentation](https://docs.cloudera.com/machine-learning/cloud/). In this lab you have an option to point to other URL location(s) by updating this file. However, any time you update the links you will also need to rerun the job. 
 
 **Loading Pinecone**
 In this lab, we'll look at a number of ways to populate our vector database of choice. We'll review the following
@@ -130,41 +86,41 @@ In this lab, we'll look at a number of ways to populate our vector database of c
 
 In production you would likely opt for the second or third option. For this excerise, it's useful create a job through the ui so we can understand the process a bit better. 
 
->**2b.** Let's begin by looking for the job section withing or project. Click "Jobs":
-
-![Alt text](./assets/html-scrape-jobs.png)
-
->**2c.** Select "New Job":
-
-![Alt text](./assets/html-scrape-new-job.png)
-
->**2d.** Once you see the following screen, name the job. 
-
->**2e.** Assign the script - (2_populate_vector_db/pinecone_vectordb_insert.py), the dropdown will allow you to provide th4 full path. 
-
 CML Jobs are an extremely easy way to schedule jobs to run at certain times or on a dependency another job. In fact we'll be creating this job as a dependency to the other job already created for you. 
 
->**2f.** Under Schedule, select "Dependent", then select the job "Pull and Convert HTMLS to TXT". Finally click "Create Job"
+>**2a.** Note that your project already has one job, namely _Pull and Convert HTMLS to TXT_. This job will be a dependency of a new job you create.. See below, but don't run it yet.
+![Alt text](./assets/html-scrape-1.png)
 
-**Note please ensure you've selected the right container settings. You job will not work otherwise.**
-- **Editor:** Jupyter Notebook
-- **Kernal:** Python 3.10
-- **Edition:** Nvidia GPU
+>**2b.** In the left sidebar, click on _Jobs_
+![Alt text](./assets/html-scrape-jobs.png)
 
-![Alt text](./assets/html-scrape-job-parameters.png)
+>**2c.** Press _New Job_ in the top right corner
+![Alt text](./assets/html-scrape-new-job.png)
 
+>**2d.** On the next screen, give your job a name
 
-Great! Now you've created your own job! We can now run the scraping job "Pull and Convert HTMLS to TXT", and the populate vector database job will kick off automatically after that. 
+>**2e.** Under **Script** browse to ```2_populate_vector_db/pinecone_vectordb_insert.py``` by clicking on the folder icon.
 
->**2g.** Go back to "Jobs" (as shown above in substep b)
+> **2f.** Ensure you've selected the right runtime settings, per below:
+>  For **Editor** select _JupyterLab_ 
+> For **Kernel** select _Python 3.10_
+> For **Edition** select _Nvidia GPU_ 
 
->**2h.** Click on "run as" for the "Pull and Convert HTMLS to TXT" job. 
+>**2g.** Under **Schedule**, select _Dependent_, then select the job _Pull and Convert HTMLS to TXT_. ![Alt text](./assets/html-scrape-job-parameters.png)
 
+> **2h.** Finally click _Create Job_, scrolling all the way down.
+
+Great! Now you've created your very own CML job! We can now run the scraping job and the populate vector DB job will kick off automatically after that. 
+
+>**2g.** Go back to _Jobs_ (as shown above in substep 2b)
+
+>**2h.** Click the _Run as_ button for the _Pull and Convert HTMLS to TXT_ job. 
 ![Alt text](./assets/html-scrape-run-job.png)
 
-Make sure you confirm both jobs ran succesfully.
-
+After just over a minute you should see both of your jobs completed successfully. While the job is running you can review the code in ```2_populate_vector_db/pinecone_vectordb_insert.py```
 ![Alt text](./assets/html-scrape-post-run-job.png)
+
+:pencil2: CML jobs give users an ability to automate recurrent tasks and streamline the workflow for a machine learning project. You have seen CML interact with a popular 3rd party vector database within an isolated compute framework. 
 
 ## 3. Explore your data via Pinecone DB
 
@@ -420,14 +376,3 @@ To get started, we're going to revisit the application that we created in step 4
 ![Alt-text](./assets/step_8-10.png)
 
 >**8g.** Finally, you're ready to start asking questions!
-
-
-## 9. Instruction Following
-
-We'll now look at an example, that uses the Bloom model for instruction following. For this section you'll need a session with a GPU.
-
-
- We will instructing the model to classify a review as positive or negatice. We will be using multi-shot approach, providing a few examples of reviews along with actual positive or negative rating. 
-
-What we are testing is the ability for the LLM model to learn to review will (according to our labeled data) under a three seperate multi-shot prompt scenarios. Then for each scenario, the prompted model is asked to clasify the entire dataset with and finally and accuracy score is calculated. We can see that going from prompt 1 to 2 saw an inrease while going from prompt 2 to 3 saw a signicat drop.  
-
