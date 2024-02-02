@@ -16,10 +16,6 @@ There are currently 8 exercises in the lab, and others will be added soon. It is
   - [2. Scrape and ingest data and populate Pinecone DB](#2-scrape-and-ingest-data-and-populate-pinecone-db)
   - [3. Explore your data via Pinecone DB](#3-explore-your-data-via-pinecone-db)
   - [4. Deploy a CML application](#4-deploy-a-cml-application)
-    - [Deploying your application via the UI](#deploying-your-application-via-the-ui)
-    - [Interacting with Application](#interacting-with-application)
-    - [Application script](#application-script)
-    - [Deploying your application through the API.](#deploying-your-application-through-the-api)
   - [5. Switch Vector DB to Chroma DB](#5-switch-vector-db-to-chroma-db)
   - [6. Langchain](#6-langchain)
   - [7. Use a locally hosted LLama2 model](#7-use-a-locally-hosted-llama2-model)
@@ -51,11 +47,11 @@ In this first section, we'll interact with a model (Anthropic's Claude) via Amaz
 ![Alt text](./assets/open-session.png)
 
 >**1b.** Give you session a name (e.g. "Jupyter Rocks!"). 
-> For **Editor** select _JupyterLab_ 
-> For **Kernel** select _Python 3.10_
-> For **Edition** select _Nvidia GPU_ 
-> Leave the other settings as is.
-![Session setup UI](./assets/Session-settings.png)
+>* For **Editor** select _JupyterLab_ 
+>* For **Kernel** select _Python 3.10_
+>* For **Edition** select _Nvidia GPU_ 
+>* Leave the other settings as is.
+>![Session setup UI](./assets/Session-settings.png)
 
 >**1c.** Click _Start Session_ in the bottom right.
 
@@ -73,31 +69,22 @@ In this first section, we'll interact with a model (Anthropic's Claude) via Amaz
 
 ## 2. Scrape and ingest data and populate Pinecone DB
 
-In this section you will define a CML _Job_ to load text data into [Pinecone](https://www.pinecone.io/) vector database. Jobs are responsible for running scripts in a specific and isolated environment (just like sessions from exercise 1).  Jobs can can be scheduled, run on-demand, or be joined together into pipelines. 
+In this section you will define a CML _Job_ to load text data into [Pinecone](https://www.pinecone.io/) vector database. Jobs are responsible for running scripts in a specific and isolated environment (just like sessions from exercise 1).  Jobs can run on a schedule, on-demand, or be joined together into pipelines. 
 
-For this exercise html links are already provided in  ```2_populate_vector_db/html_links.txt``` These sample links point to various pages of [Cloudera's CML documentation](https://docs.cloudera.com/machine-learning/cloud/). In this lab you have an option to point to other URL location(s) by updating this file. However, any time you update the links you will also need to rerun the job. 
+For this exercise html links are already provided in  ```2_populate_vector_db/html_links.txt```. These sample links point to various pages of [Cloudera's CML documentation](https://docs.cloudera.com/machine-learning/cloud/). In this lab you have an option to point to other URL location(s) by updating this file. However, any time you update the links you will also need to rerun the job. 
 
-**Loading Pinecone**
-In this lab, we'll look at a number of ways to populate our vector database of choice. We'll review the following
+There are two ways to create a JOB in CML: via the UI or programmatically with [CML's APIv2](https://docs.cloudera.com/machine-learning/cloud/api/topics/ml-api-v2.html). In production you would likely opt for the second option. For this exercise, it's useful to create a job through the UI so we can understand the process a bit better. 
 
-- Through a CML job
-- Through a script
-- Generating a job and running it programatically 
-
-In production you would likely opt for the second or third option. For this excerise, it's useful create a job through the ui so we can understand the process a bit better. 
-
-CML Jobs are an extremely easy way to schedule jobs to run at certain times or on a dependency another job. In fact we'll be creating this job as a dependency to the other job already created for you. 
-
->**2a.** Note that your project already has one job, namely _Pull and Convert HTMLS to TXT_. This job will be a dependency of a new job you create.. See below, but don't run it yet.
+>**2a.** Note that your project already has one job, namely _Pull and Convert HTMLS to TXT_. This job will be a dependency of a new job you create. You do not need to run it just yet.
 ![Alt text](./assets/html-scrape-1.png)
 
->**2b.** In the left sidebar, click on _Jobs_
+>**2b.** In the left sidebar, click on _Jobs_.
 ![Alt text](./assets/html-scrape-jobs.png)
 
->**2c.** Press _New Job_ in the top right corner
+>**2c.** Press _New Job_ in the top right corner.
 ![Alt text](./assets/html-scrape-new-job.png)
 
->**2d.** On the next screen, give your job a name
+>**2d.** On the next screen, give your job a name.
 
 >**2e.** Under **Script** browse to ```2_populate_vector_db/pinecone_vectordb_insert.py``` by clicking on the folder icon.
 
@@ -110,114 +97,79 @@ CML Jobs are an extremely easy way to schedule jobs to run at certain times or o
 
 > **2h.** Finally click _Create Job_, scrolling all the way down.
 
-Great! Now you've created your very own CML job! We can now run the scraping job and the populate vector DB job will kick off automatically after that. 
+Great! Now you've created your very own CML job! You can run the scraping job and the populate vector DB job will kick off automatically after that. 
 
 >**2g.** Go back to _Jobs_ (as shown above in substep 2b)
 
 >**2h.** Click the _Run as_ button for the _Pull and Convert HTMLS to TXT_ job. 
 ![Alt text](./assets/html-scrape-run-job.png)
 
-After just over a minute you should see both of your jobs completed successfully. While the job is running you can review the code in ```2_populate_vector_db/pinecone_vectordb_insert.py```
+After just over a minute you should see both of your jobs completed successfully. While the jobs are running you can review the code in ```2_populate_vector_db/pinecone_vectordb_insert.py```, by navigating to _Overview_ > _Files_ in a new tab.
 ![Alt text](./assets/html-scrape-post-run-job.png)
 
 :pencil2: CML jobs give users an ability to automate recurrent tasks and streamline the workflow for a machine learning project. You have seen CML interact with a popular 3rd party vector database within an isolated compute framework. 
 
 ## 3. Explore your data via Pinecone DB
 
-We will now get to explore our new knowlege base. 
+In this exercise you will interact with the knowledge base that has been loaded in a Pinecone vector database in [Exercise 2](#2-scrape-and-ingest-data-and-populate-pinecone-db). 
 
->**3a.** Return to the session you created in step 1. Click on Sessions in the left sidebar and click on the session you created at the beginning. 
+>**3a.** Click on _Sessions_ in the left sidebar. If the session you've created before has expired, click _New Session_ in the top right and follow the steps in **1b**. Otherwise, click on your session to return to it. 
 
->**3b.**  We will use the following directory *2_populate_vector_db*
+>**3b.**  Once Jupyter UI comes up, open file ```3_query_vector_db/pinecone_vectordb_query.ipynb``` by double clicking it.
+![Interact with Pinecone](./assets/pinecone-notebook.png)
 
-![Alt text](./assets/explore-vdb-folder-path.png)
+>**3d.** Work through the notebook by running each cell. When you are finished come back to this guide.
 
->**3c.** Open the following file : *pinecone_vectordb_query.ipynb*
-
-![Alt text](./assets/explore-vdb-file.png)
-
-Below are addition details, but you can follow instructions contained in the notebook as a main guide. 
-There are two functions we'll use to help us execute the query. 
-
-- **get_nearest_chunk_from_pinecone_vectordb** - this function takes a user question and queries the Pinecone vector database to find the most relevant knowledge base content. This starts by embedding the question. Then we look for a hit on top 5 matches based on vector similarity. Finally a file path, mapping to original content is identified along with similarity score. 
-- **load_context_chunk_from_data** - this function handles the responce once the filepath (or search result) has been idenfied with earlier function.
-
-![Alt text](./assets/explore-vdb-functions.png)
-
-Try interacting with your vector db. You can ask it different questions about your data.
-
-![Alt text](./assets/explore-vdb-questions.png)
+:pencil2: You have now not only populated, but also retreived context chunks from a Pinecone Vector DB using CML. Now you have all of the starting building blocks for building a full RAG-based application.
 
 ## 4. Deploy a CML application
 
-So far we have interacted with our models and vector database through a jupyter notebook. Now lets see how an a user might interact with an LLM solution through a CML application. CML supports a large number of solutions for deploying applications. In this lab we'll be deploying a gradio app to interact with the model. 
+So far we have interacted with our models and vector database through a Jupyter notebook. Now lets see how a user might interact with an LLM solution through a CML application. CML can be used to deploy UI applications based on popular frameworks (e.g. [flask](https://flask.palletsprojects.com/en/3.0.x/), [streamlit](https://streamlit.io/), [gradio](https://www.gradio.app/)) for deploying applications. In this lab we'll be deploying a gradio app to interact with the model using a chat interface. 
 
- In this lab we will deploy an application using the UI. We'll also explore how to do this programatically through the CML API. 
+The exercise will walk you through the steps to deploy the application using the UI. We'll also explore how to do this programatically through the CML APIv2. 
 
-### Deploying your application via the UI
+>**4a.** Go back to your project screen, by clicking ![<-- Project](./assets/project-btn.png) in the top bar of your session. 
 
->**4a.** On your project screen click on "Applications", click on new application (upper right corner).
-
+>**4b.** In the left sidebar click on _Applications_. 
 ![Alt-text](./assets/deploy-cml-app-button.png)
 
->**4b.** Create a new application:
+>**4c.** Press _New Application_ in the middle of the screen.
 
-![Alt-text](./assets/deploy-cml-app-new.png)
+>**4d.** Name your application. Here we name it ```LLM APP```
 
- See figure below for how to fill in the fields.
+>**4e.** Provide a creative subdomain name. This has to be unique.
 
- >**4c.** Name your application. Here we name it 'LLM APP"
- >**4d.** Pick a subdomain name. This needs to be unique.
->**4d.** Select the following path for your application script:
-> *4_launch_hosted_app/llm_prototype_app.py*
-**4e.** For resource profile, select 2 vCPU / 4 GB Memory
-**4f.** Click "Launch Application
+>**4f.** Select the following path for your application **Script**:
+```4_launch_hosted_app/llm_prototype_app.py```
 
-**Note please ensure you've selected the right container settings. You application will not work otherwise.**
-- **Editor:** Jupyter Notebook
-- **Kernal:** Python 3.10
-- **Edition:** Nvidia GPU
+>**4e.** Ensure you have selected the right container settings for the application, per below:
+>* **Editor:** _Jupyter Notebook_
+>* **Kernal:** _Python 3.10_
+>* **Edition:** _Nvidia GPU_
 
+>**4e.** For resource profile, select _2 vCPU / 4 GB Memory_. Overall, aside for mthe subdomain, settings should look like the below screenshot.
 ![Alt text](./assets/image_app.png)
 
-Lastly you do not need a GPU for this instance, as this application will not house the model but will call the model for inference.
+>**4f.** Click _Create Application_ at the bottom of the page.
 
->**4g.** 
+### Interacting with an Application
+The application will take a couple of miuntes to start, once it does you can click on its card to open the UI. While it's starting you can review the code in ```4_launch_hosted_app/llm_prototype_app.py```.
 
-### Interacting with Application
-Now let's set what the application can do. 
+You will notice reliance on some environment variables. These have been setup at the ML Workspace level and can be shared accross all projects. Alternatively, environment variables can be specific to a Project or even a session, job, or application. 
 
->**4h.** Return to the application, by clicking "Applications" on the top link, and then click on the app. Make sure the app has successfully been deployed. 
+You might also notice this script shares some functions with the code we used earlier to query our pinecone database. The new response function also considers which model the user selects to complete the response. This highlights the power of modularity in CML.
 
-![Alt-text](./assets/image-return-to-app.png)
-
-Check to confirm your app has completely deployed. You should see a message confirming.
-
+>**4h.** Check to confirm your app has deployed successfuly. You should see a message confirming. 
 ![Alt-text](./assets/image-click-on-app.png)
 
-
-Take some time to ask different questions about your data. Also, note the parameters towards the bottom that you can configure to change the way your application responds
-
+>**4i.** Click on the App's URL to navigate to the gradio UI. In a new tab you should see the appliction open:
 ![alt text](.assets/../assets/image_app3.png)
 
-Try playing with some question/model/db/parameter combinations!
+Take some time to ask different questions about CML. Soe examples to get you started... 
+- What is ML Runtime?
+- What is the latest CML release?
 
-### Application script
-Let's take a minute to see what's powering this application. 
-
->**4i.** In the main project page, Open the folder *4_launch_hosted_app*
-
-![Alt-text](./assets/deploy-cml-script-folder.png )
-
->**4j.** Open the following file *llm_prototype_app.py*
-
-![Alt-text](./assets/deploy-cml-script-file.png)
-
- The model defines endpoint url and access key variables (lines 42 and 43) which are then passed through to the bedrock client. 
-
-![Alt-text](./assets/deploy-cml-script-code.png)
-
-You might notice this script shares some functions with the code we used earlier to query our pinecone database. The new response function also considers which model the user selects to complete the response. This highlights the power of modularity in CML.
+Also, note the parameters towards the bottom that you can configure to change the way your application responds. You can choose to use Pinecone or not (i.e. no RAG), regulate length of response, and adjust the _Temperature_ (i.e. creativity/randomness) of the response. 
 
 ### Deploying your application through the API. 
 Next let's look at how an application can be deployed programatically. Go back to the session, you created in step 1, if still open. Follow the steps below ,following the folder path then the file to open.
