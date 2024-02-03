@@ -192,48 +192,23 @@ You will recall that in [exercise 2](#2-scrape-and-ingest-data-and-populate-pine
 
 ## 6. Langchain
 
-So far we have seen a number of components that come together to allow us to interact with our data - the model, the vector data base, the application, the code base, and finally the underlying platform. Langchain is a powerful library that offers a flexible way to chain those (plus more) components together. In this lab we'll look at a particular use of lang chain, although it can be for more things such as agents that can take actions based on LLMs responses. For more information see : [Intro to Langchain](https://python.langchain.com/docs/get_started/introduction)
+So far we have seen a number of components that come together to allow us to interact with an LLM, the vector database, the application, the code base, and finally the underlying platform. Langchain is a powerful library that offers a flexible way to chain those (plus more) components together. In this lab we'll look at a particular use of Langchain. For more information see : [Intro to Langchain](https://python.langchain.com/docs/get_started/introduction).
 
->**6a.** Go to the session (started in step 1c).
-
->**6b.** Go into the folder *6_populate_local_chroma_db*:
-
-![Alt-text](./assets/LangChain-folder.png)
-
->**6c.** Open the notebook called Langchain_Bedrock_Chroma.ipynb:
-
-![Alt-text](./assets/LangChain-file.png)
-
-
- In this section we'll be looking at using langchain to 'chain' together the following components:
-- Amazon Bedrock
-- Chroma vector data base
+In this section we'll be looking at using langchain to "chain" together the following components:
+- Amazon Bedrock model
+- Chroma Vector DataBase hosted locally
 - Prompt Template
 
-The beauty of using langchain for our example once we've created the chain object we do not have to rely on customer functions to query the vector store, then send path to LLM for a reponse. This is all done in a single function. The pieces of 'chain' can then be replaced when needed.
+The beauty of using langchain for our example is once we've created the chain object we do not have to rely on custom functions to query the vector store, then send path to LLM for a reponse. This is all done in a single function. The pieces of the "chain" can then be replaced when needed.
 
->**6d.** Below are addition details, but you can follow instructions contained in the notebook as a main guide. 
+>**6a.** Go to your session. Create a new one if yours timed out. 
 
-Below let's walk through how these components are chained together. First we start by creating the vector object:
+>**6b.** Navigate to ```6_langchain_introduction``` and open notebook titled ```Langchain_Bedrock_Chroma.ipynb```
+![Exercise 6 notebook](./assets/langchain-notebook.png)
 
-![Alt-text](./assets/LangChain-vector-object.png)
+>**6c.** Work through the cells in the notebook by running them. When you are done exist your jupyter session and come back to this guide.
 
-Then we create the llm object:
-
-![Alt-text](./assets/LangChain-llm-model.png)
-
-Next we create the prompt template. 
-
-![Alt-text](./assets/LangChain-prompt-template.png) 
-
-Next we chain these together:
-
-![Alt-text](./assets/LangChain-Chaining.png)
-
-Finally we can see Lang Chain in action:
-
-![Alt-text](./assets/LangChain-function.png)
-
+:pencil2: In this exercise you've gotten familiar with a popular chaining package and applied it in a CML session to build a chain for interacting with Bedrock, Chroma, and a specific prompt template. 
 
 ## 7. Use a locally hosted LLama2 model
 
