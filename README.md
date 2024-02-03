@@ -101,7 +101,7 @@ Great! Now you've created your very own CML job! You can run the scraping job an
 
 >**2g.** Go back to _Jobs_ (as shown above in substep 2b)
 
->**2h.** Click the _Run as_ button for the _Pull and Convert HTMLS to TXT_ job. 
+>**2h.** Click the _Run as_ button for the _Pull and Convert HTMLS to TXT_ job. Note that jobs can also be triggered using a [machine user](https://docs.cloudera.com/management-console/cloud/user-management/topics/mc-machine-user.html) (a.k.a. service account).   
 ![Alt text](./assets/html-scrape-run-job.png)
 
 After just over a minute you should see both of your jobs completed successfully. While the jobs are running you can review the code in ```2_populate_vector_db/pinecone_vectordb_insert.py```, by navigating to _Overview_ > _Files_ in a new tab.
@@ -165,40 +165,30 @@ You might also notice this script shares some functions with the code we used ea
 >**4i.** Click on the App's URL to navigate to the gradio UI. In a new tab you should see the appliction open:
 ![alt text](.assets/../assets/image_app3.png)
 
-Take some time to ask different questions about CML. Soe examples to get you started... 
+Take some time to ask different questions about CML. Some examples to get you started... 
 - What is ML Runtime?
 - What is the latest CML release?
 
-Also, note the parameters towards the bottom that you can configure to change the way your application responds. You can choose to use Pinecone or not (i.e. no RAG), regulate length of response, and adjust the _Temperature_ (i.e. creativity/randomness) of the response. 
+Also, note the parameters towards the bottom that you can configure to change the way your application responds. You can choose to use Pinecone or not (i.e. no RAG), regulate length of response, and adjust the _Temperature_ (i.e. creativity/randomness) of the response. Note that responses using Vector Database will take longer to return as the LLM needs to process many more tokens as input context.
+
+:pencil2: One of the key capabilities of CML is the hosting Applications integrated as part of the Data Science workflow. Practitioners can iterate rapidly and securely share insights, features, and prototypes to interested stakeholders. 
 
 ## 5. Switch Vector DB to Chroma DB
 
-We'll continue to explore CML's modularity for hosting LLM applications. We will now switch over to a Chroma DB. Pinecone is a public data store offering great scalability. Chroma DB is open source and offers extensible querying. Fundamentally, a good LLM application offers design flexibility, by allowing users to switch out the models or vector db components per business requirements.
+We'll continue to explore CML's modularity for hosting LLM applications. We will now switch over to a Chroma DB. This may be a good choice customers who are not able to use external vector databases, and need everything to be hosted in-house. Fundamentally, a good LLM application offers design flexibility, by allowing users to switch out the models or vector db components per business requirements.
 
-You will recall that earlier we created a new job using the UI (in step 2). Now we will create a new job using the CML API. Using the API facilitates a programmatic approach to job creation and execution, offering significant advantages in terms of automation and workflow management. This method enhances the efficiency of job management, allowing for more streamlined and effective data processing. 
+You will recall that in [exercise 2](#2-scrape-and-ingest-data-and-populate-pinecone-db) we created a new job using the UI. Now we will create a new job using CML's API. Using the API facilitates a programmatic approach to job creation and execution, offering significant advantages in terms of MLOps and general CI/CD. 
 
->**5a.** Go to the session (started in step 1c). If this session is not open, start a new session, with the same parameters as step 1c. Once in your session open the following path illustrated below:
+>**5a.** Go to the session (started in step 1c). If this session has timed out, start a new session, with the same parameters as step 1c. Once in your session open the following path illustrated below:
 
->**5b.** Open the folder called *5_populate_local_chroma_db*:
+>**5b.** Navigate to ```5_populate_local_chroma_db``` and open notebook ```create_chroma_job.ipynb```
+![Populate chroma db using CML API notebook](./assets/populate-chroma.png)
 
-![Alt-text](./assets/Chroma-db-folder.png)
+>**5c.** Work through all the cells in this notebook by running them, then return to this guide for next steps.
 
->**5c.** Open the notebook called *create_chroma_job.ipynb*: 
+>**5d.** To confirm the job completed successfully, exit your suession by pressing ![<-- Project](./assets/project-btn.png). Then go to _Jobs_ in the left sidebar and you should see _Success_ next to the _Populate Chroma Vector DB job_.
 
-![Alt-text](./assets/Chroma-db-file.png)
-
->**5d.** Below are addition details, but you can follow instructions contained in the notebook as a main guide. 
-
-
-Notice that first we set up a client and define a runtime for the job we can use in the future.
-
-![Alt-text](./assets/Chroma-db-client-create.png)
-
-In the final step we create and run the job. This step points to the script responsible for the job (populate_chroma_vectors.py).
-
-![Alt-text](./assets/Chroma-db-job-create.png)
-
- To confirm the job completed successfully, go to Jobs and you should see Success next to the Populate Chroma Vector DB jo”
+:pencil2: To support automation CML provides a robust API that supports most of the operations that can be done through the UI. This enables practitioners to plug in to existing CI/CD pipelines that exist in the enterprise.
 
 ## 6. Langchain
 
