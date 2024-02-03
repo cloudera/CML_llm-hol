@@ -210,77 +210,46 @@ The beauty of using langchain for our example is once we've created the chain ob
 
 :pencil2: In this exercise you've gotten familiar with a popular chaining package and applied it in a CML session to build a chain for interacting with Bedrock, Chroma, and a specific prompt template. 
 
-## 7. Use a locally hosted LLama2 model
+## 7. Use a locally hosted Mistral model
 
-In this section we're going to look at yet another way of interacting with our deployed models. In earlier examples that used notebooks, we relied on code to aid in the process of our querying the vector db, then interacting with the model. We now look at a scenario that resembles how the interaction may take place in production - with a model and vector store already deployed. This is facilitated through the use of cml's apis. 
+Many organizations are hesitant to use 3rd party LLM providers, instead opting to host open source models internally, to leverage in their use cases. CML provides a convenient facility to do this via _Model Deployments_ functionality. This provides a scalable and secure way to host LLMs and classic inference models in an isolated and fully controlled CML environment. 
 
->**7a.** Go to the session (started in step 1c).
+For the purposes of this exercise, a [Mistral-7B-instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1) model has already been deployed in a separate, public project in the ML Workspace. You will use this model's endpoint to interact with it similar to how interactions with AWS Bedrock was done.
 
->**7b.** Go into the folder *7_cml_hosted_model*:
+>**7a.** Go to your session, or start a new one if yours timed out.
 
-![Alt-text](./assets/cml-hosted-31.png)
+>**7b.** Navigate to ```7_cml_hosted_model``` and open notebook titled ```query_cml_llm_model_api.ipynb```:
+![CML model notebook](./assets/hosted-model-notebook.png)
 
->**7c.** Open the notebook called *query_cml_llm_model_api.ipynb*:
+>**7c.** Work through the cells in this notebook by running them. When you are done, exist your Jupyter session and return to this guide. 
 
-![Alt-text](./assets/cml-hosted-32.png)
-
->**7d.** Below are addition details, but you can follow instructions contained in the notebook as a main guide. 
-
-We begin this notebook, by setting up our client, then listing all open projects. Note the "CDSW_APIV2_KEY" environement variable has already been set for use and gives us access to workspace:
-
-![Alt-text](./assets/cml-hosted-34.png)
-
-
-The next step is to filter by project name:
-
-![Alt-text](./assets/cml-hosted-35.png)
-
-
-We use this step to get the project id. Using the project id, we then list the models deployed within the project:
-
-![Alt-text](./assets/cml-hosted-38.png)
-
-We now have the required api key for the modle of interest. Next let's get the model endpoint:
-
-![Alt-text](./assets/cml-hosted-36.png)
-
-We are now ready to start using the endpoint to ask the model quesitons. Bleow we set up the various components of the prompt - instructions, tone, and the actual question:
-
-![Alt-text](./assets/cml-hosted-37.png)
+:pencil2: CML can host models and expose them via standard API mechanism, with authorization available out-of-the-box. Hosting models internally not only protects enterprise IP, but also allows for application of precise fine-tuning approaches and substantial savings on inference costs over time.
 
 ## 8. Launch Final Application
 
-We now are going to put all the pieces together into a final application that allows us to 
-- Select our model
-- Select our vector store of choice
-
-This expemplifies the extensibility for LLM apps provided by CML. 
+We are now going to put all the pieces together into a final application that allows for model selection (internal vs external) and a vector DB selection (internal or external). This expemplifies the flexibility of LLM apps built with CML.
 
 To get started, we're going to revisit the application that we created in step 4. 
 
->**8a.** Go to main project screen and click on applications, there you will see the application created in step 4 
-
+>**8a.** Go to main project screen and click on _Applications_ in the left sidebar. You will see the application created in step 4 
 ![Alt-text](./assets/step_8-9.png)
 
->**8b.** Click on the three dots on the top right hand corner and select "Application Details"
-
+>**8b.** Click on the three dots on the top right hand corner and select _Application Details_
 ![Alt-text](./assets/step_8-6.png)
 
->**8c.** Select the top section "Settings". Now you are going to select the new file for the application. Click on the folder icon under the "Script" section. Then click on the file path:
- 8_launch_app_final/llm_app_final.py
-
+>**8c.** Select the top section _Settings_. Now you are going to select the new file for the application. Click on the folder icon under the **Script** section. Then select the file path ```8_launch_app_final/llm_app_final.py```
 ![Alt-text](./assets/step_8-2.png)
 
->**8d.** When done, click on "Update Application"
-
+>**8d.** Click on _Update Application_ at the bottom of the page.
 ![Alt-text](./assets/step_8-4.png)
 
->**8e.** You're now taken to the actual application. Click on on the section called "Additional Inputs"
+>**8e.** Once your application is in _Running_ state click on it to open the app UI. 
 
+>**8f.** Inside the application UI, expand the section called _Additional Inputs_
 ![Alt-text](./assets/step_8-8.png)
 
->**8f.** From here you can see that all application parameters available. Select the model, vector db, and other parameters of your choice
-
+>**8g.** From here you can see all of the application parameters available. Select the model, vector db, and other parameters you'd like to use for each prompt. Finally, you're ready to start asking questions!
 ![Alt-text](./assets/step_8-10.png)
 
->**8g.** Finally, you're ready to start asking questions!
+## :tada: Congratulations! :tada:
+You've learned a lot in the last few hours, but this is just the beginning. [Cloudera Machine Learning](https://www.cloudera.com/products/machine-learning.html) has a lot more to offer for your enterprise as part of an overall [Cloudera Data Platform](https://www.cloudera.com/) on-prem and in the cloud. 
