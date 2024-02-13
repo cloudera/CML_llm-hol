@@ -1,6 +1,6 @@
 # Large Language Models with Cloudera
 
-The goal of this hands-on lab is to explore Cloudera Machine Learning (CML) through the lens of LLM RAG architecture. Starting from a simple Jupyter notebook and finishing with a complete chatbot application, participants will get to know some of the key CML features and advantages. In a real-world scenario, changing business requirements and technology advancements necessitate agility and CML is a great tool to provide that to Data Science practitioners. 
+The goal of this hands-on lab is to explore Cloudera Machine Learning (CML) through the lens of [Retreival Augmented Generation](https://arxiv.org/abs/2312.10997) (RAG) architecture for Large Language Models. Starting from a simple Jupyter notebook and finishing with a complete chatbot application, participants will get to know some of the key CML features and advantages. In a real-world scenario, changing business requirements and technology advancements necessitate agility and CML is a great tool to provide that to Data Science practitioners. 
 
 Because the applications of LLMs can be quite broad across industries, it is useful to hone in on a particular use case for the purposes of this lab. 
 
@@ -120,7 +120,7 @@ In this exercise you will interact with the knowledge base that has been loaded 
 
 >**3d.** Work through the notebook by running each cell. When you are finished come back to this guide.
 
-:pencil2: You have now not only populated, but also retreived context chunks from a Pinecone Vector DB using CML. Now you have all of the starting building blocks for building a full RAG-based application.
+:pencil2: You have now not only populated, but also retreived context chunks from a Pinecone Vector DB using CML. You have all of the starting building blocks for building a full RAG-based, LLM application.
 
 ## 4. Deploy a CML application
 
@@ -169,7 +169,7 @@ Take some time to ask different questions about CML. Some examples to get you st
 - What is ML Runtime?
 - What is the latest CML release?
 
-Also, note the parameters towards the bottom that you can configure to change the way your application responds. You can choose to use Pinecone or not (i.e. no RAG), regulate length of response, and adjust the _Temperature_ (i.e. creativity/randomness) of the response. Note that responses using Vector Database will take longer to return as the LLM needs to process many more tokens as input context.
+Also, note the parameters towards the bottom that you can configure to change the way your application responds. You can choose to use Pinecone or not (i.e. no retreival-augmentation), regulate length of response, and adjust the _Temperature_ (i.e. creativity/randomness) of the response. Note that responses using Vector Database will take longer to return as the LLM needs to process many more tokens as input context.
 
 :pencil2: One of the key capabilities of CML is the hosting Applications integrated as part of the Data Science workflow. Practitioners can iterate rapidly and securely share insights, features, and prototypes to interested stakeholders. 
 
