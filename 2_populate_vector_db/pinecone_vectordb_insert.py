@@ -4,13 +4,14 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModel
 from pathlib import Path
-import pinecone
+from pinecone import Pinecone, ServerlessSpec
 from sentence_transformers import SentenceTransformer
 
 # Get environment variables for Pinecone API key, environment, and index name.
 PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
 PINECONE_ENVIRONMENT = os.getenv('PINECONE_ENVIRONMENT')
 PINECONE_INDEX = os.getenv('PINECONE_INDEX')
+
 dimension = 768
 
 # Set embedding model
@@ -21,27 +22,32 @@ tokenizer = AutoTokenizer.from_pretrained(EMBEDDING_MODEL_REPO)
 model = AutoModel.from_pretrained(EMBEDDING_MODEL_REPO)
 
 # Define a function to create a Pinecone collection with the specified index name.
-def create_pinecone_collection(PINECONE_INDEX):
+def create_pinecone_collection(pc, PINECONE_INDEX):
     try:
         print(f"Creating 768-dimensional index called '{PINECONE_INDEX}'...")
         # Create the Pinecone index with the specified dimension.
-        pinecone.create_index(PINECONE_INDEX, dimension=768)
+        pc.create_index(name=PINECONE_INDEX,
+                        dimension=768,
+                        spec=ServerlessSpec(
+                          cloud='aws',
+                          region=PINECONE_ENVIRONMENT))
         print("Success")
-    except:
+    except Exception as e:
+        print (e)
         # index already created, continue
         pass
 
     print("Checking Pinecone for active indexes...")
-    active_indexes = pinecone.list_indexes()
+    active_indexes = pc.list_indexes()
     print("Active indexes:")
     print(active_indexes)
     print(f"Getting description for '{PINECONE_INDEX}'...")
-    index_description = pinecone.describe_index(PINECONE_INDEX)
+    index_description = pc.describe_index(PINECONE_INDEX)
     print("Description:")
     print(index_description)
 
     print(f"Getting '{PINECONE_INDEX}' as object...")
-    pinecone_index = pinecone.Index(PINECONE_INDEX)
+    pinecone_index = pc.Index(PINECONE_INDEX)
     print("Success")
 
     # Return the Pinecone index object.
@@ -93,11 +99,12 @@ def main():
     try:
         print("initialising Pinecone connection...")
         # Initialize the Pinecone connection with API key and environment.
-        pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+        # pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+        pc = Pinecone(api_key=PINECONE_API_KEY)
         print("Pinecone initialised")
         
         # Create a Pinecone collection with the specified index name.
-        collection = create_pinecone_collection(PINECONE_INDEX)
+        collection = create_pinecone_collection(pc, PINECONE_INDEX)
         
         # Same files are ignored (e.g. running process repetitively won't overwrite, just pick up new files)
         print("Pinecone index is up and collection is created")
