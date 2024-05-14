@@ -20,6 +20,9 @@ environment_variables:
   PINECONE_ENVIRONMENT:
     default: ""
     description: "Environment within Pinecone service"
+  PINECONE_INDEX:
+    default: ""
+    description: "Index within Pinecone Environment"
 
 runtimes: 
   - editor: JupyterLab
