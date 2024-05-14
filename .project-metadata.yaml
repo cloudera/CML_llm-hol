@@ -17,9 +17,9 @@ environment_variables:
   PINECONE_API_KEY:
     default: ""
     description: "API Keys for Pinecone service"
-   PINECONE_REGION:
-     default: "us-east-1"
-     description: "Cloud Region within Pinecone service"
+  PINECONE_REGION:
+    default: "us-east-1"
+    description: "Cloud Region within Pinecone service"
   PINECONE_INDEX:
     default: ""
     description: "Index within Pinecone Environment"
