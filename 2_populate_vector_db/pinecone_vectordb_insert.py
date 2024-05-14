@@ -9,7 +9,7 @@ from sentence_transformers import SentenceTransformer
 
 # Get environment variables for Pinecone API key, environment, and index name.
 PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
-PINECONE_ENVIRONMENT = os.getenv('PINECONE_ENVIRONMENT')
+PINECONE_REGION = os.getenv('PINECONE_REGION')
 PINECONE_INDEX = os.getenv('PINECONE_INDEX')
 
 dimension = 768
@@ -30,7 +30,7 @@ def create_pinecone_collection(pc, PINECONE_INDEX):
                         dimension=768,
                         spec=ServerlessSpec(
                           cloud='aws',
-                          region=PINECONE_ENVIRONMENT))
+                          region=PINECONE_REGION))
         print("Success")
     except Exception as e:
         print (e)
