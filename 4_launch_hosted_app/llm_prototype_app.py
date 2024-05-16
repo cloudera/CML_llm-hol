@@ -24,11 +24,9 @@ EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
 
 if USE_PINECONE:
     PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
-    #PINECONE_ENVIRONMENT = os.getenv('PINECONE_ENVIRONMENT')
     PINECONE_INDEX = os.getenv('PINECONE_INDEX')
 
     print("initialising Pinecone connection...")
-    #pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
     pc = Pinecone(api_key=PINECONE_API_KEY)
     print("Pinecone initialised")
 
