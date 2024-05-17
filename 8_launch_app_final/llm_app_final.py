@@ -2,6 +2,7 @@ import os
 import gradio as gr
 import cmlapi
 import pinecone
+from pinecone import Pinecone, ServerlessSpec
 from typing import Any, Union, Optional
 from pydantic import BaseModel
 import tensorflow as tf
@@ -26,15 +27,14 @@ EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
 
 if USE_PINECONE:
     PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
-    PINECONE_ENVIRONMENT = os.getenv('PINECONE_ENVIRONMENT')
     PINECONE_INDEX = os.getenv('PINECONE_INDEX')
 
     print("initialising Pinecone connection...")
-    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+    pc = Pinecone(api_key=PINECONE_API_KEY)
     print("Pinecone initialised")
 
     print(f"Getting '{PINECONE_INDEX}' as object...")
-    index = pinecone.Index(PINECONE_INDEX)
+    index = pc.Index(PINECONE_INDEX)
     print("Success")
 
     # Get latest statistics from index
@@ -274,7 +274,7 @@ def get_nearest_chunk_from_pinecone_vectordb(index, question):
     # Generate embedding for user question with embedding model
     retriever = SentenceTransformer(EMBEDDING_MODEL_REPO)
     xq = retriever.encode([question]).tolist()
-    xc = index.query(xq, top_k=5,include_metadata=True)
+    xc = index.query(vector=xq, top_k=5,include_metadata=True)
     
     matching_files = []
     scores = []
