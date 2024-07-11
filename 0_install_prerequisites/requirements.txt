@@ -16,6 +16,7 @@ accelerate==0.21.0
 huggingface-hub==0.18.0
 langchain
 langchain-community
+aiofiles
 
 ## Build custom knowlege base requirements
 beautifulsoup4==4.12.2
