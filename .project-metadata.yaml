@@ -44,7 +44,7 @@ tasks:
     short_summary: Install Dependencies
     kernel: python3
     cpu: 2
-    memory: 12
+    memory: 8
 
   - type: run_session
     name: Setup Chroma Server
@@ -62,6 +62,18 @@ tasks:
     arguments: None
     short_summary: Create job to source htmls, download, and convert them to text. 
     long_summary: Create job to source htmls, download, and convert them to text. Update html_links.txt with the htmls you wish to download and convert.
+    cpu: 2
+    memory: 4
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB
+
+  - type: create_job
+    name: Populate Pinecone Vector DB
+    entity_label: insert_pinecone
+    script: 2_populate_vector_db/pinecone_vectordb_insert.py
+    arguments: None
+    short_summary: Insert scraped data into Pinecone vector database
+    long_summary: Create job to source insert text chunks in Pinecone vector databse.
     cpu: 2
     memory: 4
     environment:
