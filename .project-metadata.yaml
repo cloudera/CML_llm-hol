@@ -72,7 +72,7 @@ tasks:
     entity_label: insert_pinecone
     script: 2_populate_vector_db/pinecone_vectordb_insert.py
     arguments: None
-    short_summary: Insert scraped data into Pinecone vector database
+    short_summary: Insert scraped data into Pinecone vector database.
     long_summary: Create job to source insert text chunks in Pinecone vector databse.
     cpu: 2
     memory: 4
