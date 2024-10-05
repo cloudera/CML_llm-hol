@@ -18,7 +18,7 @@ There are currently 8 exercises in the lab, and others will be added soon. It is
   - [4. Deploy a CML application](#4-deploy-a-cml-application)
   - [5. Switch Vector DB to Chroma DB](#5-switch-vector-db-to-chroma-db)
   - [6. Langchain](#6-langchain)
-  - [7. Use a locally hosted LLama2 model](#7-use-a-locally-hosted-llama2-model)
+  - [7. Use a locally hosted Mistral model](#7-use-a-locally-hosted-llama2-model)
   - [8. Launch Final Application](#8-launch-final-application)
 
 ## 0. Getting into CML
