@@ -82,8 +82,9 @@ def extract_and_write_text(url, base_path, tld):
     
     with open(file_path, 'w', encoding='utf-8') as f:
         soup_text = soup.get_text()
-        soup_text = soup_text.replace('\n', ' ')
+        #soup_text = soup_text.replace('\n', ' ')
         soup_text = remove_non_ascii(soup_text)
+        soup_text = soup_text.replace('   ', '')
         f.write(soup_text)
 
 def main():
