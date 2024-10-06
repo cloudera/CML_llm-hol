@@ -13,3 +13,9 @@ https://docs.cloudera.com/machine-learning/cloud/requirements-azure/topics/ml-re
 https://docs.cloudera.com/machine-learning/cloud/requirements-azure/topics/ml-limitations-azure.html
 https://docs.cloudera.com/machine-learning/cloud/requirements-azure/topics/ml-azure-planning.html
 https://docs.cloudera.com/machine-learning/cloud/release-notes/topics/ml-whats-new.html
+https://docs.cloudera.com/machine-learning/cloud/release-notes/topics/ml-dl-compatibility.html
+https://docs.cloudera.com/machine-learning/cloud/user-accounts/topics/ml-user-roles.html
+https://docs.cloudera.com/machine-learning/cloud/projects/topics/ml-editors-configuration-modes.html
+https://docs.cloudera.com/machine-learning/cloud/api/topics/ml-api-v2.html
+https://docs.cloudera.com/machine-learning/cloud/runtimes-preinstalled-packages/topics/ml-runtimes-pkgs-2024-05-2-python-3-11-jupyterlab.html
+https://docs.cloudera.com/machine-learning/cloud/runtimes-preinstalled-packages/topics/ml-runtimes-pkgs-2024-05-2-python-3-10-jupyterlab.html
