@@ -29,6 +29,8 @@ Your SSO login link will take you direction to the home screen of Cloudera Data 
 
 > **0b.** Then click on ML Workspace called _llmhol-aw-wksp_ (the name may vary for your lab).
 ![Control Plane to CML](./assets/intro_1.png)
+> If you have switched to the new Cloudera UI, your screen will look like below. 
+![Control Plane with new Cloudera UI](./assets/Cloudera_new_ui.png)
 
 If you are new to CML, take a moment to explore available information through the dashboard.  
 
