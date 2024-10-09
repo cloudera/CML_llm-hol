@@ -30,6 +30,9 @@ Your SSO login link will take you direction to the home screen of Cloudera Data 
 > **0b.** Then click on ML Workspace called _llmhol-aw-wksp_ (the name may vary for your lab).
 ![Control Plane to CML](./assets/intro_1.png)
 
+> If you have switched to the new Cloudera UI, your screen will look like below. 
+![Control Plane with new Cloudera UI](./assets/Cloudera_new_ui.png)
+
 If you are new to CML, take a moment to explore available information through the dashboard.  
 
 Concept of _projects_ is used to organize the workspace. Each project is typically linked to a remote repository (e.g. git) and can have multiple collaborators working on it. In the interest of time, a _Hands on Lab Workshop with LLM_ project has already been created for you and you are the sole _Owner_ of that project. 
