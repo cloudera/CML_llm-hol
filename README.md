@@ -118,9 +118,16 @@ In this exercise you will interact with the knowledge base that has been loaded 
 >**3b.**  Once Jupyter UI comes up, open file ```3_query_vector_db/pinecone_vectordb_query.ipynb``` by double clicking it.
 ![Interact with Pinecone](./assets/pinecone-notebook.png)
 
->**3d.** Work through the notebook by running each cell. When you are finished come back to this guide.
+>**3c.** Try the Cloudera ML Copilot! Click on the chat icon in the left side bar of the Jupyter UI. This will open a chat window. Start with a generic question like
+```What does sentence_transformers package do in python?```
+![Copilot chat UI](./assets/copilot_1.png)
 
-:pencil2: You have now not only populated, but also retreived context chunks from a Pinecone Vector DB using CML. You have all of the starting building blocks for building a full RAG-based, LLM application.
+>**3d.** Next you can provide parts of the notebook to the ML Copilot as contxt. To do this, highlight some code (e.g. all of ```get_nearest_chunk_from_pinecone_vectordb``` function) and check the _Include Selection_ box below the chat panel. Then ask ```What does this code do?```.
+![Copilot with context](./assets/copilot_2.png)
+
+>**3e.** Finally, work through the notebook by running each cell. When you are finished come back to this guide.
+
+:pencil2: You've gotten some first-hand experience with Cloudera ML Copilot capabilities. Remember that the underlying model can be self-hosted, without any external calls. You have also not only populated, but also retreived context chunks from a Pinecone Vector DB using CML. You have all of the starting building blocks for building a full RAG-based, LLM application.
 
 ## 4. Deploy a CML application
 

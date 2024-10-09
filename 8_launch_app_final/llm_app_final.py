@@ -16,13 +16,33 @@ from botocore.config import Config
 import chromadb
 from chromadb.utils import embedding_functions
 
+
 from huggingface_hub import hf_hub_download
+from openai import OpenAI
 
 # Set any of these to False, if not using respective parts of the lab
 USE_PINECONE = True 
 USE_CHROMA = True 
+USE_INFERENCE = True
+
+# Cloudera AI Inference Block
+API_KEY = os.environ['INFERENCE_KEY']
+MODEL_ID = os.environ['CLDR_MODEL_ID']
+BASE_URL = os.environ['CLDR_BASE_URL']
+
+# Turn off inference radio button if no key is supplied in the environment variables
+if API_KEY == "":
+    USE_INFERENCE = False
+    
 
 EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
+
+
+# Setting up a client for Cloudera AI Inference
+inference_client = OpenAI(
+  base_url = BASE_URL,
+  api_key = API_KEY,
+  )
 
 
 if USE_PINECONE:
@@ -85,8 +105,6 @@ MODEL_ACCESS_KEY = selected_model.access_key
 MODEL_ENDPOINT = os.getenv("CDSW_API_URL").replace("https://", "https://modelservice.").replace("/api/v1", "/model?accessKey=")
 MODEL_ENDPOINT = MODEL_ENDPOINT + MODEL_ACCESS_KEY
 
-#MODEL_ACCESS_KEY = os.environ["CML_MODEL_KEY"]
-#MODEL_ENDPOINT = "https://modelservice.ml-8ac9c78c-674.se-sandb.a465-9q4k.cloudera.site/model?accessKey=" + MODEL_ACCESS_KEY
 
 if os.environ.get("AWS_DEFAULT_REGION") == "":
     os.environ["AWS_DEFAULT_REGION"] = "us-west-2"
@@ -152,6 +170,11 @@ def main():
     print("Configuring gradio app")
 
     DESC = "This AI-powered assistant showcases the flexibility of Cloudera Machine Learning to work with 3rd party solutions for LLMs and Vector Databases, as well as internally hosted models and vector DBs. The prototype does not yet implement chat history and session context - every prompt is treated as a brand new one."
+
+    if USE_INFERENCE:
+        model_options = ['Local Mistral 7B', 'AWS Bedrock Claude v2.1', 'NEW Cloudera AI Inference Llama 3.1 8B']
+    else:
+        model_options = ['Local Mistral 7B', 'AWS Bedrock Claude v2.1']
     
     # Create the Gradio Interface
     demo = gr.ChatInterface(
@@ -159,7 +182,7 @@ def main():
         #examples=[["What is Cloudera?", "AWS Bedrock Claude v2.1", 0.5, "100"], ["What is Apache Spark?", 0.5, "100"], ["What is CML HoL?", 0.5, "100"]], 
         title="Enterprise Custom Knowledge Base Chatbot",
         description = DESC,
-        additional_inputs=[gr.Radio(['Local Mistral 7B', 'AWS Bedrock Claude v2.1'], label="Select Foundational Model", value="AWS Bedrock Claude v2.1"), 
+        additional_inputs=[gr.Radio(model_options, label="Select Foundational Model", value="AWS Bedrock Claude v2.1"), 
                            gr.Slider(minimum=0.01, maximum=1.0, step=0.01, value=0.5, label="Select Temperature (Randomness of Response)"),
                            gr.Radio(["50", "100", "250", "500", "1000"], label="Select Number of Tokens (Length of Response)", value="250"),
                            gr.Radio(['None', 'Pinecone', 'Chroma'], label="Vector Database Choices", value="None")],
@@ -260,6 +283,42 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
             response = f"{response}\n\n For additional info see: {url_from_source(source)}"
             
             # Stream output to UI
+            for i in range(len(response)):
+                time.sleep(0.02)
+                yield response[:i+1]
+                
+    elif model == "Cloudera AI Inference Llama 3.1 8B":
+        if vector_db == "None":
+            response = get_inference_response_with_context(message, "", temperature, token_count)
+            
+            for i in range(len(response)):
+                time.sleep(0.02)
+                yield response[:i+1]
+                
+        elif vector_db == "Pinecone":
+            # Vector search the index
+            context_chunk, source, score = get_nearest_chunk_from_pinecone_vectordb(index, message)
+
+            # Call Cloudera AI Inference model
+            response = get_inference_response_with_context(message, context_chunk, temperature, token_count)
+
+            # Add reference to specific document in the response
+            response = f"{response}\n\n For additional info see: {url_from_source(source)}"
+            
+            for i in range(len(response)):
+                time.sleep(0.02)
+                yield response[:i+1]
+                
+        elif vector_db == "Chroma":
+            # Vector search in Chroma
+            context_chunk, source = get_nearest_chunk_from_chroma_vectordb(collection, message)
+            
+            # Call CML hosted model
+            response = get_inference_response_with_context(message, context_chunk, temperature, token_count)
+            
+            # Add reference to specific document in the response
+            response = f"{response}\n\n For additional info see: {url_from_source(source)}"
+            
             for i in range(len(response)):
                 time.sleep(0.02)
                 yield response[:i+1]
@@ -388,6 +447,45 @@ def get_llama2_response_with_context(question, context, temperature, token_count
         print(e)
         return e
 
+
+# AI Inference function
+def get_inference_response_with_context(question, context, temperature, token_count):
+
+    llama_sys = f"<s>[INST]You are a helpful, respectful and honest assistant. If you are unsure about an answer, truthfully say \"I don't know\"."
+
+    if context == "":
+        # Following LLama's spec for prompt engineering
+        llama_inst = f"Please answer the user question.[/INST]</s>"
+        question_and_context = f"{llama_sys} {llama_inst} \n [INST] {question} [/INST]"
+    else:
+        # Add context to the question
+        llama_inst = f"Anser the user's question based on the folloing information:\n {context}[/INST]</s>"
+        question_and_context = f"{llama_sys} {llama_inst} \n[INST] {question} [/INST]"
+
+    try:
+        # Build a request payload for CML hosted model
+        data={ "request": {"prompt":question_and_context,"temperature":temperature,"max_new_tokens":token_count,"repetition_penalty":1.0} }
+
+        completion = inference_client.chat.completions.create(
+              model=MODEL_ID,
+              messages=[{"role":"user","content":question_and_context}],
+                temperature=float(temperature),
+              top_p=0.7,
+              max_tokens=int(token_count),
+              stream=False
+            )
+
+        response = completion.choices[0].message.content
+        
+        # Logging
+        print(f"Request: {question_and_context}")
+        print(f"Response: {response}")
+            
+        return str(response)
+        
+    except Exception as e:
+        print(e)
+        return e
 
 if __name__ == "__main__":
     main()

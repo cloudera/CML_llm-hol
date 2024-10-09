@@ -14,7 +14,7 @@ entries:
       - Exercises
       - LLM
       - Model Deployment
-    git_url: "https://github.com/cloudera/CML_llm-hol"
+    git_url: "https://github.com/ogakulov/CML_llm-hol"
     is_prototype: true
     
   - title: Shared LLM Model for Hands on Lab
