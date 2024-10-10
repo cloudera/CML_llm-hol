@@ -157,7 +157,7 @@ The exercise will walk you through the steps to deploy the application using the
 >* **Kernal:** _Python 3.10_
 >* **Edition:** _Nvidia GPU_
 
->**4e.** For resource profile, select _2 vCPU / 4 GB Memory_. Overall, aside for mthe subdomain, settings should look like the below screenshot.
+>**4e.** For resource profile, select _2 vCPU / 4 GB Memory_. Overall, aside from the subdomain, settings should look like the below screenshot.
 ![Alt text](./assets/image_app.png)
 
 >**4f.** Click _Create Application_ at the bottom of the page.
@@ -177,7 +177,10 @@ You might also notice this script shares some functions with the code we used ea
 
 Take some time to ask different questions about CML. Some examples to get you started... 
 - What is ML Runtime?
+- What version of datalake is compatible with CML 2.0.45?
 - What is the latest CML release?
+
+_Bonus question_ Why is it that with that last prompt about CML release, the model didn't return an expected result? What are some ways you could overcome this challenge?
 
 Also, note the parameters towards the bottom that you can configure to change the way your application responds. You can choose to use Pinecone or not (i.e. no retreival-augmentation), regulate length of response, and adjust the _Temperature_ (i.e. creativity/randomness) of the response. Note that responses using Vector Database will take longer to return as the LLM needs to process many more tokens as input context.
 
@@ -206,7 +209,7 @@ So far we have seen a number of components that come together to allow us to int
 
 In this section we'll be looking at using langchain to "chain" together the following components:
 - Amazon Bedrock model
-- Chroma Vector DataBase hosted locally
+- Chroma Vector Database hosted locally
 - Prompt Template
 
 The beauty of using langchain for our example is once we've created the chain object we do not have to rely on custom functions to query the vector store, then send path to LLM for a reponse. This is all done in a single function. The pieces of the "chain" can then be replaced when needed.
@@ -256,10 +259,10 @@ To get started, we're going to revisit the application that we created in step 4
 >**8e.** Once your application is in _Running_ state click on it to open the app UI. 
 
 >**8f.** Inside the application UI, expand the section called _Additional Inputs_
-![Alt-text](./assets/step_8-8.png)
+![Final app with local models](./assets/final_app_1.png)
 
 >**8g.** From here you can see all of the application parameters available. Select the model, vector db, and other parameters you'd like to use for each prompt. Finally, you're ready to start asking questions!
-![Alt-text](./assets/step_8-10.png)
+![Final app output](./assets/final_app_2.png)
 
 ## :tada: Congratulations! :tada:
 You've learned a lot in the last few hours, but this is just the beginning. [Cloudera Machine Learning](https://www.cloudera.com/products/machine-learning.html) has a lot more to offer for your enterprise as part of an overall [Cloudera Data Platform](https://www.cloudera.com/) on-prem and in the cloud. 
