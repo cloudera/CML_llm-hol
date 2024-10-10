@@ -26,23 +26,26 @@ USE_CHROMA = True
 USE_INFERENCE = True
 
 # Cloudera AI Inference Block
-API_KEY = os.environ['INFERENCE_KEY']
-MODEL_ID = os.environ['CLDR_MODEL_ID']
-BASE_URL = os.environ['CLDR_BASE_URL']
-
 # Turn off inference radio button if no key is supplied in the environment variables
-if API_KEY == "":
+try:
+    API_KEY = os.environ['INFERENCE_KEY']
+    MODEL_ID = os.environ['CLDR_MODEL_ID']
+    BASE_URL = os.environ['CLDR_BASE_URL']
+
+    print(f"{MODEL_ID}\n\n{BASE_URL}\n\n{API_KEY}")
+    # Setting up a client for Cloudera AI Inference
+    inference_client = OpenAI(
+          base_url = BASE_URL,
+          api_key = API_KEY,
+          )
+except:
     USE_INFERENCE = False
-    
+        
 
 EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
 
 
-# Setting up a client for Cloudera AI Inference
-inference_client = OpenAI(
-  base_url = BASE_URL,
-  api_key = API_KEY,
-  )
+
 
 
 if USE_PINECONE:
@@ -287,10 +290,15 @@ def get_responses(message, history, model, temperature, token_count, vector_db):
                 time.sleep(0.02)
                 yield response[:i+1]
                 
-    elif model == "Cloudera AI Inference Llama 3.1 8B":
+    elif model == "NEW Cloudera AI Inference Llama 3.1 8B":
         if vector_db == "None":
+            print ("calling get_inference_response_with_context")
+            print(message)
+            print(temperature)
+            print(token_count)
             response = get_inference_response_with_context(message, "", temperature, token_count)
-            
+            print(response)
+            print("trying to yield outputs")
             for i in range(len(response)):
                 time.sleep(0.02)
                 yield response[:i+1]
