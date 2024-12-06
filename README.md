@@ -18,7 +18,7 @@ There are currently 8 exercises in the lab, and others will be added soon. It is
   - [4. Deploy a CML application](#4-deploy-a-cml-application)
   - [5. Switch Vector DB to Chroma DB](#5-switch-vector-db-to-chroma-db)
   - [6. Langchain](#6-langchain)
-  - [7. Use a locally hosted LLama2 model](#7-use-a-locally-hosted-llama2-model)
+  - [7. Use a locally hosted Mistral model](#7-use-a-locally-hosted-llama2-model)
   - [8. Launch Final Application](#8-launch-final-application)
 
 ## 0. Getting into CML
@@ -29,6 +29,9 @@ Your SSO login link will take you direction to the home screen of Cloudera Data 
 
 > **0b.** Then click on ML Workspace called _llmhol-aw-wksp_ (the name may vary for your lab).
 ![Control Plane to CML](./assets/intro_1.png)
+
+> If you have switched to the new Cloudera UI, your screen will look like below. 
+![Control Plane with new Cloudera UI](./assets/Cloudera_new_ui.png)
 
 If you are new to CML, take a moment to explore available information through the dashboard.  
 
@@ -73,7 +76,7 @@ In this section you will define a CML _Job_ to load text data into [Pinecone](ht
 
 For this exercise html links are already provided in  ```2_populate_vector_db/html_links.txt```. These sample links point to various pages of [Cloudera's CML documentation](https://docs.cloudera.com/machine-learning/cloud/). In this lab you have an option to point to other URL location(s) by updating this file. However, any time you update the links you will also need to rerun the job. 
 
-There are two ways to create a JOB in CML: via the UI or programmatically with [CML's APIv2](https://docs.cloudera.com/machine-learning/cloud/api/topics/ml-api-v2.html). In production you would likely opt for the second option. For this exercise, it's useful to create a job through the UI so we can understand the process a bit better. 
+There are two ways to create a _Job_ in CML: via the UI or programmatically with [CML's APIv2](https://docs.cloudera.com/machine-learning/cloud/api/topics/ml-api-v2.html). In production you would likely opt for the second option. For this exercise, it's useful to create a job through the UI so we can understand the process a bit better. 
 
 >**2a.** Note that your project already has one job, namely _Pull and Convert HTMLS to TXT_. This job will be a dependency of a new job you create. You do not need to run it just yet.
 ![Alt text](./assets/html-scrape-1.png)
@@ -118,9 +121,16 @@ In this exercise you will interact with the knowledge base that has been loaded 
 >**3b.**  Once Jupyter UI comes up, open file ```3_query_vector_db/pinecone_vectordb_query.ipynb``` by double clicking it.
 ![Interact with Pinecone](./assets/pinecone-notebook.png)
 
->**3d.** Work through the notebook by running each cell. When you are finished come back to this guide.
+>**3c.** Try the Cloudera ML Copilot! Click on the chat icon in the left side bar of the Jupyter UI. This will open a chat window. Start with a generic question like
+```What does sentence_transformers package do in python?```
+![Copilot chat UI](./assets/copilot_1.png)
 
-:pencil2: You have now not only populated, but also retreived context chunks from a Pinecone Vector DB using CML. You have all of the starting building blocks for building a full RAG-based, LLM application.
+>**3d.** Next you can provide parts of the notebook to the ML Copilot as contxt. To do this, highlight some code (e.g. all of ```get_nearest_chunk_from_pinecone_vectordb``` function) and check the _Include Selection_ box below the chat panel. Then ask ```What does this code do?```.
+![Copilot with context](./assets/copilot_2.png)
+
+>**3e.** Finally, work through the notebook by running each cell. When you are finished come back to this guide.
+
+:pencil2: You've gotten some first-hand experience with Cloudera ML Copilot capabilities. Remember that the underlying model can be self-hosted, without any external calls. You have also not only populated, but also retreived context chunks from a Pinecone Vector DB using CML. You have all of the starting building blocks for building a full RAG-based, LLM application.
 
 ## 4. Deploy a CML application
 
@@ -147,7 +157,7 @@ The exercise will walk you through the steps to deploy the application using the
 >* **Kernal:** _Python 3.10_
 >* **Edition:** _Nvidia GPU_
 
->**4e.** For resource profile, select _2 vCPU / 4 GB Memory_. Overall, aside for mthe subdomain, settings should look like the below screenshot.
+>**4e.** For resource profile, select _2 vCPU / 4 GB Memory_. Overall, aside from the subdomain, settings should look like the below screenshot.
 ![Alt text](./assets/image_app.png)
 
 >**4f.** Click _Create Application_ at the bottom of the page.
@@ -167,7 +177,10 @@ You might also notice this script shares some functions with the code we used ea
 
 Take some time to ask different questions about CML. Some examples to get you started... 
 - What is ML Runtime?
+- What version of datalake is compatible with CML 2.0.45?
 - What is the latest CML release?
+
+_Bonus question_ Why is it that with that last prompt about CML release, the model didn't return an expected result? What are some ways you could overcome this challenge?
 
 Also, note the parameters towards the bottom that you can configure to change the way your application responds. You can choose to use Pinecone or not (i.e. no retreival-augmentation), regulate length of response, and adjust the _Temperature_ (i.e. creativity/randomness) of the response. Note that responses using Vector Database will take longer to return as the LLM needs to process many more tokens as input context.
 
@@ -196,7 +209,7 @@ So far we have seen a number of components that come together to allow us to int
 
 In this section we'll be looking at using langchain to "chain" together the following components:
 - Amazon Bedrock model
-- Chroma Vector DataBase hosted locally
+- Chroma Vector Database hosted locally
 - Prompt Template
 
 The beauty of using langchain for our example is once we've created the chain object we do not have to rely on custom functions to query the vector store, then send path to LLM for a reponse. This is all done in a single function. The pieces of the "chain" can then be replaced when needed.
@@ -246,10 +259,10 @@ To get started, we're going to revisit the application that we created in step 4
 >**8e.** Once your application is in _Running_ state click on it to open the app UI. 
 
 >**8f.** Inside the application UI, expand the section called _Additional Inputs_
-![Alt-text](./assets/step_8-8.png)
+![Final app with local models](./assets/final_app_1.png)
 
 >**8g.** From here you can see all of the application parameters available. Select the model, vector db, and other parameters you'd like to use for each prompt. Finally, you're ready to start asking questions!
-![Alt-text](./assets/step_8-10.png)
+![Final app output](./assets/final_app_2.png)
 
 ## :tada: Congratulations! :tada:
 You've learned a lot in the last few hours, but this is just the beginning. [Cloudera Machine Learning](https://www.cloudera.com/products/machine-learning.html) has a lot more to offer for your enterprise as part of an overall [Cloudera Data Platform](https://www.cloudera.com/) on-prem and in the cloud. 

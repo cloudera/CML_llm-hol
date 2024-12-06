@@ -46,6 +46,8 @@ def create_directory_path_from_url(base_path, url):
     file_path = os.path.join(directory_path, file_name)
     return directory_path, file_path
 
+CML_OVERVIEW = True
+
 def extract_and_write_text(url, base_path, tld):
     if url in visited_urls or not url.startswith(tld):
         return
@@ -79,17 +81,24 @@ def extract_and_write_text(url, base_path, tld):
     os.makedirs(directory_path, exist_ok=True)
     
     
+        
     
     with open(file_path, 'w', encoding='utf-8') as f:
         soup_text = soup.get_text()
-        soup_text = soup_text.replace('\n', ' ')
+        #soup_text = soup_text.replace('\n', ' ')
         soup_text = remove_non_ascii(soup_text)
+        soup_text = soup_text.replace('   ', '')
+        # this logic forces overview page to include "CML" abbreviation for retreival, otherwise it's not used anywhere on the page
+        if "ml-product-overview" in url:
+            soup_text = "What is CML?\n" + soup_text
         f.write(soup_text)
+
+
 
 def main():
     base_path = "/home/cdsw/data"
     with open("/home/cdsw/2_populate_vector_db/html_links.txt", "r") as file:
-        for line in file:
+        for line in file:            
             url = line.strip()
             if url:
                 tld = get_tld(url)

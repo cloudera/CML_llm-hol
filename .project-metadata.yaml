@@ -1,36 +1,9 @@
 name: LLM Hands on Lab with CML
 description: "Hands on Lab which demonstrates a number of concepts including web scraping, vector databases, model deployment, model usage, Langchain, application building, and instruction following/tuning."
 author: "Cloudera"
-date: "2023-12-20"
+date: "2024-10-08"
 specification_version: 1.0
-prototype_version: 1.0
-# environment_variables:
-#   AWS_ACCESS_KEY_ID:
-#     description: "Access key ID for interacting with AWS Bedrock"
-#     prompt: "Enter your AWS Access Key ID (optional):"
-#     required: false
-#   AWS_SECRET_ACCESS_KEY:
-#     description: "Secret key for interacting with AWS Bedrock"
-#     prompt: "Enter your AWS Secret Access Key (optional):"
-#     required: false
-#   AWS_DEFAULT_REGION:
-#     default: "us-west-2"
-#     description: "AWS Region where Bedrock models are available"
-#     prompt: "Enter your AWS Region (default: us-west-2):"
-#     required: false
-#   PINECONE_API_KEY:
-#     description: "API Keys for Pinecone service"
-#     prompt: "Enter your Pinecone API Key (optional):"
-#     required: false
-#   PINECONE_REGION:
-#     default: "us-east-1"
-#     description: "Cloud Region within Pinecone service"
-#     prompt: "Enter your Pinecone Region (default: us-east-1):"
-#     required: false
-#   PINECONE_INDEX:
-#     description: "Index within Pinecone Environment"
-#     prompt: "Enter your Pinecone Index (optional):"
-#     required: false
+prototype_version: 1.1
 
 runtimes: 
   - editor: JupyterLab
@@ -44,7 +17,7 @@ tasks:
     short_summary: Install Dependencies
     kernel: python3
     cpu: 2
-    memory: 12
+    memory: 8
 
   - type: run_session
     name: Setup Chroma Server
